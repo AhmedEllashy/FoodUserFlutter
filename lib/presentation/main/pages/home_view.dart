@@ -49,10 +49,7 @@ Widget sectionOne() {
     crossAxisAlignment: CrossAxisAlignment.center,
     children: [
       Column(
-
         children: [
-
-
           Row(
             children: [
               const Icon(
@@ -115,37 +112,42 @@ Widget sectionTwo() {
               child: Padding(
                 padding: const EdgeInsets.all(AppPadding.p12),
                 child: Row(
-                  children:  [
-                   const Icon(
+                  children: [
+                    const Icon(
                       Icons.search,
                       color: AppColors.grey,
                     ),
-                   const  SizedBox(
+                    const SizedBox(
                       width: AppSize.s14,
                     ),
-                    Text(AppStrings.search,style: getRegularTextStyle(color: AppColors.grey),),
+                    Text(
+                      AppStrings.search,
+                      style: getRegularTextStyle(color: AppColors.grey),
+                    ),
                   ],
                 ),
               ),
             ),
           ),
-          const SizedBox(width: AppSize.s14,),
+          const SizedBox(
+            width: AppSize.s14,
+          ),
           Container(
-                    height: AppSize.s60,
-                    width: AppSize.s60,
-                    // margin: const EdgeInsets.only(top: AppMargin.m20),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(AppSize.s14),
-                      shape: BoxShape.rectangle,
-                      color: AppColors.primary.withOpacity(AppDecimal.d_8),
-                    ),
-                    child: Center(
-                      child: Image.asset(
-                        AppAssets.filterAsset,
-                        height: AppSize.s30,
-                      ),
-                    ),
-                  )
+            height: AppSize.s60,
+            width: AppSize.s60,
+            // margin: const EdgeInsets.only(top: AppMargin.m20),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(AppSize.s14),
+              shape: BoxShape.rectangle,
+              color: AppColors.primary.withOpacity(AppDecimal.d_8),
+            ),
+            child: Center(
+              child: Image.asset(
+                AppAssets.filterAsset,
+                height: AppSize.s30,
+              ),
+            ),
+          )
         ],
       ),
     ],
