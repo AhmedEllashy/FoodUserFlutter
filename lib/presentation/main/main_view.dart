@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_user/presentation/main/pages/cart_view.dart';
 import 'package:food_user/presentation/main/pages/favourite_view.dart';
-import 'package:food_user/presentation/main/pages/home_view.dart';
+import 'package:food_user/presentation/main/pages/home/home_view.dart';
 import 'package:food_user/presentation/main/pages/notification_view.dart';
 import 'package:food_user/presentation/main/pages/profile_view.dart';
 import 'package:food_user/presentation/resources/color_manager.dart';

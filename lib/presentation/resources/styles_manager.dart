@@ -22,9 +22,9 @@ getRegularTextStyle({Color color = AppColors.grey,double fontSize =AppFontSizes.
   );
 }
 
-getMediumTextStyle() {
+getMediumTextStyle({Color color = AppColors.mainFontColor,double fontSize =AppFontSizes.f16 , FontWeight fontWeight =AppFontWeights.w5 ,double letterSpacing =AppSize.s1_5  }) {
   return getTextStyle(
-    AppColors.mainFontColor ,AppFontSizes.f16, AppFontWeights.w5,AppSize.s1_5 );
+    color,fontSize,fontWeight,letterSpacing);
 }
 
 getBoldTextStyle({Color color = AppColors.mainFontColor,double fontSize =AppFontSizes.f18 , FontWeight fontWeight =AppFontWeights.bold ,double letterSpacing =AppSize.s1_5 }) {

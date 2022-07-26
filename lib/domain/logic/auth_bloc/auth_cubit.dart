@@ -42,7 +42,6 @@ class AuthCubit extends Cubit<AuthStates> {
       emit(AuthSignWithGoogleFailedState(e.message.toString()));
     }
   }
-
   Future signUpWithGoogle() async {
     emit(AuthSignUpWithGoogleLoadingState());
 
@@ -80,7 +79,6 @@ class AuthCubit extends Cubit<AuthStates> {
       emit(AuthSignWithGoogleFailedState(e.message.toString()));
     }
   }
-
   Future signInWithEmailAndPassword(String email ,String password)async{
     emit(AuthSignInWitheEmailAndPasswordLoadingState());
   try{

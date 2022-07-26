@@ -36,6 +36,17 @@ class AppStrings{
   static const String services =  "services";
   static const String stores =  "stores";
   static const String changeLanguage = "change_Language";
+  static const String trending = "Trending";
+  static const String sweDish = "Swe Dish";
+  static const String description = "Description";
+  static const String mealDescription = "The ultimate mix of Chicken together with Mushrooms, Red Onions, Green Peppers, fresh Tomatoes, Olives and melting mozzarella cheese.";
+  static const String inGradients = "Ingredients";
+  static const String addToCart = "Add to cart";
+
+  static const String mostPopular = "Most Popular";
+
+
+
 
   static const String noRoute = "There is no route";
   static const String onBoardingTitleOne = "Get food delivery to your doorstep asap";

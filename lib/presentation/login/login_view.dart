@@ -106,7 +106,7 @@ class _LoginViewState extends State<LoginView> {
                           textColor: AppColors.black,
                           hasIcon: true,
                           hasBorder: false,
-                          icon: AppAssets.googleAsset,
+                          icon: AppAssets.googleIcon,
                         ),
                   const SizedBox(
                     width: AppSize.s20,
@@ -119,7 +119,7 @@ class _LoginViewState extends State<LoginView> {
                     textColor: AppColors.black,
                     hasIcon: true,
                     hasBorder: false,
-                    icon: AppAssets.facebookAsset,
+                    icon: AppAssets.facebookIcon,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -196,7 +196,8 @@ class _LoginViewState extends State<LoginView> {
           _emailController.text, _passwordController.text);
       if (state is AuthSignInWitheEmailAndPasswordCompletedState) {
         Navigator.pushNamed(context, AppRoutes.mainRoute);
-      } else if (state is AuthSignInWitheEmailAndPasswordFailedState) {
+      }
+      if (state is AuthSignInWitheEmailAndPasswordFailedState) {
         showFlashBar(state.errorMessage, context);
       }
     }

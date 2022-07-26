@@ -34,6 +34,7 @@ class AppSize{
   static const double s20 = 20.0;
   static const double s22 = 22.0;
   static const double s30 = 30.0;
+  static const double s35 = 35.0;
   static const double s40 = 40.0;
   static const double s45 = 45.0;
   static const double s50 = 50.0;
@@ -47,8 +48,17 @@ class AppSize{
   static const double s200 = 200.0;
   static const double s220 = 220.0;
   static const double s240 = 240.0;
+  static const double s260 = 260.0;
+  static const double s280 = 280.0;
+  static const double s300 = 300.0;
+  static const double s320 = 320.0;
+
   static const double s350 = 350.0;
+  static const double s380 = 380.0;
+
   static const double s400 = 400.0;
+  static const double s600 = 600.0;
+
 }
 class AppDecimal{
   static const double d_1 = 0.1;

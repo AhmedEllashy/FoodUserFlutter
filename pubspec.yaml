@@ -54,7 +54,8 @@ dependencies:
   country_code_picker:
   image_picker:
   another_flushbar: ^1.10.29
-
+  carousel_slider: ^4.1.1
+  font_awesome_flutter: ^10.1.0
 
 dev_dependencies:
   flutter_test:

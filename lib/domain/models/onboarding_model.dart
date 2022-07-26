@@ -3,5 +3,4 @@ class OnBoardingModel{
   String title;
   String description;
   OnBoardingModel(this.image,this.title,this.description);
-
 }

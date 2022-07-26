@@ -14,10 +14,25 @@ class AppAssets{
   static const String logo = '$imageAsset/logo.png';
   static const String chef = '$imageAsset/chef.png';
   static const String backgroundImage = '$imageAsset/backgroundImage.png';
-  static const String googleAsset = '$iconAsset/google.png';
-  static const String facebookAsset = '$iconAsset/facebook.png';
-  static const String userAsset = '$iconAsset/man.png';
-  static const String filterAsset = '$iconAsset/filter.png';
+  static const String bannerAsset = '$imageAsset/banner.png';
+  static const String italianPizzaAsset = '$imageAsset/italian-pizza.png';
+
+
+  static const String googleIcon = '$iconAsset/google.png';
+  static const String facebookIcon = '$iconAsset/facebook.png';
+  static const String userIcon = '$iconAsset/man.png';
+  static const String filterIcon = '$iconAsset/filter.png';
+  static const String pizzaIcon  = '$iconAsset/pizza.png';
+  static const String sausageIcon  = '$iconAsset/sausages.png';
+  static const String donutIcon  = '$iconAsset/donut.png';
+  static const String iceCreamIcon  = '$iconAsset/ice-cream.png';
+  static const String onionIcon  = '$iconAsset/onion.png';
+  static const String carrotIcon  = '$iconAsset/carrot.png';
+  static const String tomatoIcon  = '$iconAsset/tomato.png';
+  static const String cucumberIcon  = '$iconAsset/cucumber.png';
+
+
+
 
 
 

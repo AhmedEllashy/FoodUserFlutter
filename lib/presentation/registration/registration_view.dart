@@ -121,7 +121,7 @@ class _RegistrationViewState extends State<RegistrationView> {
                               textColor: AppColors.black,
                               hasIcon: true,
                               hasBorder: false,
-                              icon: AppAssets.googleAsset,
+                              icon: AppAssets.googleIcon,
                             ),
                       const SizedBox(
                         width: AppSize.s20,
@@ -136,7 +136,7 @@ class _RegistrationViewState extends State<RegistrationView> {
                         textColor: AppColors.black,
                         hasIcon: true,
                         hasBorder: false,
-                        icon: AppAssets.facebookAsset,
+                        icon: AppAssets.facebookIcon,
                       ),
                     ],
                   ),
