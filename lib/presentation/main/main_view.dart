@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:food_user/presentation/main/pages/cart_view.dart';
+import 'package:food_user/presentation/main/pages/cart/cart_view.dart';
 import 'package:food_user/presentation/main/pages/favourite_view.dart';
 import 'package:food_user/presentation/main/pages/home/home_view.dart';
 import 'package:food_user/presentation/main/pages/notification_view.dart';

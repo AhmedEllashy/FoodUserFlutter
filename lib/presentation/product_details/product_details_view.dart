@@ -19,9 +19,16 @@ class ProductDetailsView extends StatefulWidget {
 
 class _ProductDetailsViewState extends State<ProductDetailsView> {
   List<Widget> gradients = [
-    Image.asset(AppAssets.onionIcon,fit: BoxFit.fill,),
-    Image.asset(AppAssets.carrotIcon,),
-    Image.asset(AppAssets.tomatoIcon,),
+    Image.asset(
+      AppAssets.onionIcon,
+      fit: BoxFit.fill,
+    ),
+    Image.asset(
+      AppAssets.carrotIcon,
+    ),
+    Image.asset(
+      AppAssets.tomatoIcon,
+    ),
     Image.asset(AppAssets.cucumberIcon),
   ];
   List<Color> gradientsBackgroundColors = [
@@ -37,12 +44,16 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
 
   Widget _getContentWidget() {
     return Scaffold(
-      body: Column(
+      body: Stack(
         children: [
-          _topImageSection(),
-          _productDetailsSection(),
-          _descriptionSection(),
-          _gradientsSection(),
+          Column(
+            children: [
+              _topImageSection(),
+              _productDetailsSection(),
+              _descriptionSection(),
+              _gradientsSection(),
+            ],
+          ),
           _bottomSection(),
         ],
       ),
@@ -54,6 +65,20 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
       height: AppSize.s400,
       child: Stack(
         children: [
+        Container(
+          height: AppSize.s320,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: AppColors.primary.withOpacity(AppDecimal.d_3),
+          ),
+        ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Image.asset(
+            AppAssets.italianPizzaAsset,
+            height: AppSize.s320,
+          ),
+        ),
           Padding(
             padding: const EdgeInsets.symmetric(
                 horizontal: AppSize.s16, vertical: AppSize.s40),
@@ -61,6 +86,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+
                 IconButton(
                     onPressed: () {
                       Navigator.pop(context);
@@ -73,7 +99,6 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                 IconButton(
                     onPressed: () {
                       debugPrint('Tapped');
-
                     },
                     icon: const Icon(
                       Icons.favorite_outline,
@@ -82,20 +107,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
               ],
             ),
           ),
-          Container(
-            height: AppSize.s320,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(AppDecimal.d_3),
-            ),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Image.asset(
-              AppAssets.italianPizzaAsset,
-              height: AppSize.s320,
-            ),
-          ),
+
         ],
       ),
     );
@@ -116,7 +128,6 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
               const GetAppCounter(),
             ],
           ),
-
           Row(
             children: [
               Text(
@@ -201,7 +212,6 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                 color: AppColors.grey,
                 fontWeight: AppFontWeights.w4),
           ),
-
         ],
       ),
     );
@@ -209,7 +219,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
 
   Widget _gradientsSection() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal:AppSize.s14),
+      padding: const EdgeInsets.symmetric(horizontal: AppSize.s14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -222,7 +232,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
           ),
           Row(
             children: [
-              for(int i = 0; i < gradients.length;i++ )
+              for (int i = 0; i < gradients.length; i++)
                 Container(
                   height: AppSize.s50,
                   width: AppSize.s50,
@@ -231,28 +241,25 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                     color: gradientsBackgroundColors[i],
                     borderRadius: BorderRadius.circular(AppSize.s14),
                   ),
-                  child:  Padding(
+                  child: Padding(
                     padding: const EdgeInsets.all(AppPadding.p10),
                     child: gradients[i],
                   ),
                 ),
             ],
           ),
-
         ],
       ),
     );
   }
 
-  Widget _bottomSection(){
+  Widget _bottomSection() {
     return Padding(
-      padding: const EdgeInsets.only(top:AppSize.s8),
-
+      padding: const EdgeInsets.only(top: AppSize.s8),
       child: Align(
         alignment: Alignment.bottomCenter,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-
           children: [
             Row(
               children: [
@@ -264,22 +271,24 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                   padding: const EdgeInsets.only(top: AppSize.s6),
                   child: Text(
                     '.44',
-                    style:
-                    getRegularTextStyle(fontWeight: AppFontWeights.bold,fontSize: AppFontSizes.f16),
+                    style: getRegularTextStyle(
+                        fontWeight: AppFontWeights.bold,
+                        fontSize: AppFontSizes.f16),
                   ),
                 ),
               ],
             ),
-         Padding(
-           padding: const EdgeInsets.all(AppSize.s10),
-           child: AppButton(AppStrings.addToCart, () { },width: AppSize.s240,),
-         )
+            Padding(
+              padding: const EdgeInsets.all(AppSize.s10),
+              child: AppButton(
+                AppStrings.addToCart,
+                () {},
+                width: AppSize.s240,
+              ),
+            )
           ],
         ),
       ),
     );
-
-
   }
-
 }

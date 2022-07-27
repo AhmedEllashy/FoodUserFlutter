@@ -301,7 +301,7 @@ class _HomeViewState extends State<HomeView> {
           shrinkWrap: true,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: AppSize.s2.toInt(),
-              childAspectRatio: 2 / 4,
+              childAspectRatio: 2 / 3.6,
               mainAxisSpacing: AppSize.s30,
               crossAxisSpacing: AppSize.s10),
           itemBuilder: (context, index) {

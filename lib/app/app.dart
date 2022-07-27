@@ -33,7 +33,7 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<AuthCubit>(create: (_)=>AuthCubit(_repository,_appPreferences))
       ],
       child: MaterialApp(
-        initialRoute: AppRoutes.splashRoute,
+        initialRoute: AppRoutes.mainRoute,
         navigatorKey: navigatorKey,
         onGenerateRoute: RouteGenerator.getRoute,
         theme: getAppTheme(),

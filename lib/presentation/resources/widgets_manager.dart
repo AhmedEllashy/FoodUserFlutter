@@ -88,7 +88,7 @@ class AppButton extends StatelessWidget {
               : Text(
                   text,
                   style: getTextStyle(textColor, AppFontSizes.f14,
-                      AppFontWeights.w7, AppSize.s1_5),
+                      AppFontWeights.w7, AppSize.s1_5,AppSize.s1_5),
                 )),
     );
   }
@@ -121,7 +121,7 @@ class AppPhoneTextFormField extends StatelessWidget {
           ),
           hintText: AppStrings.phoneHint,
           hintStyle: getTextStyle(AppColors.secondaryFontColor,
-              AppFontSizes.f14, AppFontWeights.w3, AppSize.s1_5),
+              AppFontSizes.f14, AppFontWeights.w3, AppSize.s1_5,AppSize.s1_5),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(
                 width: AppSize.s1_5,
@@ -200,7 +200,7 @@ class _AppTextFormFieldState extends State<AppTextFormField> {
           ),
           hintText: widget.hint,
           hintStyle: getTextStyle(AppColors.mainFontColor, AppFontSizes.f14,
-              AppFontWeights.w3, AppSize.s1_5),
+              AppFontWeights.w3, AppSize.s1_5,AppSize.s1_5),
           enabledBorder: InputBorder.none,
           // enabledBorder: OutlineInputBorder(
           //   borderSide: BorderSide(
@@ -266,9 +266,6 @@ class GetProductWidget extends StatelessWidget {
             AppAssets.italianPizzaAsset,
             height: AppSize.s120,
           ),
-          const SizedBox(
-            height: AppSize.s10,
-          ),
           Row(
             children: [
               Container(
@@ -276,6 +273,7 @@ class GetProductWidget extends StatelessWidget {
                 width: AppSize.s60,
                 decoration: BoxDecoration(
                   color: Colors.red.shade100,
+                  borderRadius: BorderRadius.circular(AppSize.s4)
                 ),
                 child: Center(
                   child: Text(
@@ -286,6 +284,9 @@ class GetProductWidget extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+          const SizedBox(
+            height: AppSize.s2,
           ),
           Align(
             alignment: Alignment.centerLeft,
@@ -364,6 +365,7 @@ class GetProductWidget extends StatelessWidget {
 }
 
 class GetAppCounter extends StatefulWidget {
+
   const GetAppCounter({Key? key}) : super(key: key);
 
   @override

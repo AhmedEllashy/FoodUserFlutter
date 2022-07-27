@@ -42,6 +42,12 @@ class AppStrings{
   static const String mealDescription = "The ultimate mix of Chicken together with Mushrooms, Red Onions, Green Peppers, fresh Tomatoes, Olives and melting mozzarella cheese.";
   static const String inGradients = "Ingredients";
   static const String addToCart = "Add to cart";
+  static const String cart = "Cart";
+  static const String subTotal = "Subtotal";
+  static const String delivery = "Delivery";
+  static const String total = "Total";
+  static const String reviewPayment = "Review payment";
+
 
   static const String mostPopular = "Most Popular";
 
