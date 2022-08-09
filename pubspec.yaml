@@ -41,13 +41,17 @@ dependencies:
   cloud_firestore:
   firebase_auth:
   firebase_cloud_messaging_interop:
+  firebase_auth_web: ^4.2.1
+  firebase_storage_web: ^3.3.2
   firebase_core:
   firebase_storage:
   google_sign_in:
   internet_connection_checker:
   get_it:
+  firebase_core_web: ^1.7.1
 #local Data
   shared_preferences: ^2.0.15
+  cached_network_image: ^3.2.1
 
   cupertino_icons:
   flutter_svg:
@@ -57,6 +61,10 @@ dependencies:
   carousel_slider: ^4.1.1
   font_awesome_flutter: ^10.1.0
   dotted_line: ^3.1.0
+
+  #Payment
+  flutter_stripe: ^4.0.0
+  flutter_credit_card: ^3.0.2
 
 dev_dependencies:
   flutter_test:

@@ -1,5 +1,17 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:food_user/app/constants.dart';
+import 'package:food_user/data/Network/firebase_paths.dart';
+import 'package:food_user/domain/logic/banner_bloc/banner_cubit.dart';
+import 'package:food_user/domain/logic/banner_bloc/banner_states.dart';
+import 'package:food_user/domain/logic/cart_bloc/cart_cubit.dart';
+import 'package:food_user/domain/logic/cart_bloc/cart_states.dart';
+import 'package:food_user/domain/logic/product_bloc/product_cubit.dart';
+import 'package:food_user/domain/logic/product_bloc/product_states.dart';
+import 'package:food_user/presentation/product_details/product_details_view.dart';
 import 'package:food_user/presentation/resources/assets_manager.dart';
 import 'package:food_user/presentation/resources/font_manager.dart';
 import 'package:food_user/presentation/resources/route_manager.dart';
@@ -61,6 +73,13 @@ class _HomeViewState extends State<HomeView> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    ProductCubit.get(context).getAllProducts();
+    BannerCubit.get(context).getAllBanners();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
@@ -69,37 +88,79 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Widget getContentScreen() {
-    return SafeArea(
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(AppPadding.p20),
-          child: Column(
-            children: [
-              const SizedBox(
-                height: AppSize.s20,
-              ),
-              sectionOne(),
-              sectionTwo(),
-              bannerSection(),
-              const SizedBox(
-                height: AppSize.s20,
-              ),
-              categoriesSection(),
-              const SizedBox(
-                height: AppSize.s20,
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                  child: Text(
-                AppStrings.mostPopular,
-                style: getBoldTextStyle(),
-                textAlign: TextAlign.start,
-              )),
-              const SizedBox(
-                height: AppSize.s20,
-              ),
-              mostPopularProductsSection(),
-            ],
+    return BlocConsumer<ProductCubit, ProductStates>(
+      listener: (context, state) {
+        if (state is GetAllProductFailedState) {
+          debugPrint("error : ${state.message}");
+          getFlashBar(state.message, context);
+        }
+        if (state is GetAllProductFailedState) {
+          getFlashBar(state.message, context);
+        }
+        if (state is GetAllProductFailedState) {
+          getFlashBar(state.message, context);
+        }
+      },
+      builder: (context, state) => SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(AppPadding.p20),
+            child: Column(
+              children: [
+                const SizedBox(
+                  height: AppSize.s20,
+                ),
+                sectionOne(),
+                sectionTwo(),
+                BlocConsumer<BannerCubit, BannerStates>(
+                  listener: (context, state) {},
+                  builder: (context, state) =>
+                      state is GetAllBannersLoadingState
+                          ? const Center(child: CircularProgressIndicator())
+                          : state is GetAllBannersCompletedState
+                              ? bannerSection(state)
+                              : const Text(AppStrings.noData),
+                ),
+                const SizedBox(
+                  height: AppSize.s20,
+                ),
+                categoriesSection(),
+                const SizedBox(
+                  height: AppSize.s20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      AppStrings.mostPopular,
+                      style: getBoldTextStyle(),
+                      textAlign: TextAlign.start,
+                    ),
+                    InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(
+                            context, AppRoutes.mostPopularRoute);
+                      },
+                      child: Text(
+                        AppStrings.all,
+                        style: getMediumTextStyle(color: AppColors.primary),
+                        textAlign: TextAlign.start,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: AppSize.s20,
+                ),
+                state is GetAllProductCompletedState
+                    ? mostPopularProductsSection(state)
+                    : state is GetAllProductLoadingState
+                        ? const Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        : const Text(AppStrings.noData),
+              ],
+            ),
           ),
         ),
       ),
@@ -220,31 +281,37 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  Widget bannerSection() {
-    return ClipRRect(
-      child: CarouselSlider(
-          items: banners.map((banner) {
-            return ClipRRect(
-              borderRadius: BorderRadius.circular(AppSize.s22),
-              clipBehavior: Clip.antiAliasWithSaveLayer,
-              child: banner,
-            );
-          }).toList(),
-          options: CarouselOptions(
-            height: AppSize.s120,
-            aspectRatio: 16 / 9,
-            viewportFraction: 0.8,
-            initialPage: 0,
-            enableInfiniteScroll: true,
-            reverse: false,
-            autoPlay: true,
-            autoPlayInterval: Duration(seconds: AppSize.s3.toInt()),
-            autoPlayAnimationDuration: Duration(milliseconds: 800),
-            autoPlayCurve: Curves.fastOutSlowIn,
-            enlargeCenterPage: true,
-            scrollDirection: Axis.horizontal,
-          )),
-    );
+  Widget bannerSection(GetAllBannersCompletedState state) {
+    final banners = state.banners;
+    return CarouselSlider(
+        items: banners.map((banner) {
+          return ClipRRect(
+            borderRadius: BorderRadius.circular(AppSize.s22),
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            child: CachedNetworkImage(
+              width: double.infinity,
+              fit: BoxFit.cover,
+              imageUrl: banner.imageUrl ?? "",
+              placeholder: (context, url) => Image.asset(AppAssets.imageIcon,fit: BoxFit.cover,),
+              errorWidget: (context, url, error) =>
+                  Image.asset(AppAssets.imageIcon,fit: BoxFit.cover),
+            ),
+          );
+        }).toList(),
+        options: CarouselOptions(
+          height: AppSize.s120,
+          aspectRatio: 16 / 9,
+          viewportFraction: 0.8,
+          initialPage: 0,
+          enableInfiniteScroll: true,
+          reverse: false,
+          autoPlay: true,
+          autoPlayInterval: Duration(seconds: AppSize.s3.toInt()),
+          autoPlayAnimationDuration: const Duration(milliseconds: 800),
+          autoPlayCurve: Curves.fastOutSlowIn,
+          enlargeCenterPage: true,
+          scrollDirection: Axis.horizontal,
+        ));
   }
 
   Widget categoriesSection() {
@@ -292,23 +359,57 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  Widget mostPopularProductsSection() {
-    return Container(
-      height: AppSize.s600,
-      color: AppColors.backgroundColor,
-      child: GridView.builder(
-        itemCount: 20,
-          shrinkWrap: true,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: AppSize.s2.toInt(),
-              childAspectRatio: 2 / 3.6,
-              mainAxisSpacing: AppSize.s30,
-              crossAxisSpacing: AppSize.s10),
-          itemBuilder: (context, index) {
-            return InkWell(onTap: (){
-              Navigator.pushNamed(context, AppRoutes.productDetailsRoute);
-            },child: const GetProductWidget());
-          }),
+  Widget mostPopularProductsSection(GetAllProductCompletedState state) {
+    final products = state.products;
+
+    return BlocConsumer<CartCubit, CartStates>(
+      listener: (context, state) {
+        if(state is AddToCartCompletedState){
+          getFlashBar(AppStrings.successAddedToCart, context,backgroundColor: AppColors.green);
+        }
+        if(state is AddToCartFailedState){
+          getFlashBar(state.message, context);
+        }
+      },
+      builder: (context, state) => Container(
+        color: AppColors.backgroundColor,
+        child: GridView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: products.length,
+            shrinkWrap: true,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: AppSize.s2.toInt(),
+                childAspectRatio: 2 / 3.6,
+                mainAxisSpacing: AppSize.s30,
+                crossAxisSpacing: AppSize.s10),
+            itemBuilder: (context, index) {
+              return InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => ProductDetailsView(
+                                  prodName: products[index].name!,
+                                  category: products[index].category!,
+                                  price: products[index].price!,
+                                  discount: products[index].discount!,
+                                  imageUrl: products[index].imageUrl!,
+                                  status: products[index].status!,
+                                  amount: products[index].amount!,
+                                  deliveryTime: products[index].deliveryTime!,
+                                  description: products[index].description!,
+                                )));
+                  },
+                  child: GetProductWidget(
+                    () {
+                      CartCubit.get(context).addToCart(
+                          prodId: products[index].id ?? AppConstants.empty,
+                          quantity: 1);
+                    },
+                    product: products[index],
+                  ));
+            }),
+      ),
     );
   }
 }

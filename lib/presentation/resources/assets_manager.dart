@@ -30,6 +30,8 @@ class AppAssets{
   static const String carrotIcon  = '$iconAsset/carrot.png';
   static const String tomatoIcon  = '$iconAsset/tomato.png';
   static const String cucumberIcon  = '$iconAsset/cucumber.png';
+  static const String imageIcon  = '$iconAsset/image.png';
+
 
 
 

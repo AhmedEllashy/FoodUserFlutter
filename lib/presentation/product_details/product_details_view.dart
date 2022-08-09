@@ -1,5 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:food_user/domain/logic/product_bloc/product_states.dart';
 import 'package:food_user/presentation/resources/assets_manager.dart';
 import 'package:food_user/presentation/resources/color_manager.dart';
 import 'package:food_user/presentation/resources/font_manager.dart';
@@ -7,11 +10,33 @@ import 'package:food_user/presentation/resources/values_manager.dart';
 import 'package:food_user/presentation/resources/widgets_manager.dart';
 
 import '../../app/constants.dart';
+import '../../domain/logic/product_bloc/product_cubit.dart';
 import '../resources/string_manager.dart';
 import '../resources/styles_manager.dart';
 
 class ProductDetailsView extends StatefulWidget {
-  const ProductDetailsView({Key? key}) : super(key: key);
+  String prodName;
+  String category;
+  String price;
+  String discount;
+  int amount;
+  String imageUrl;
+  String status;
+  String deliveryTime;
+  String description;
+
+  ProductDetailsView({
+    Key? key,
+    this.prodName = "",
+    this.category = "",
+    this.price = "",
+    this.discount = "",
+    this.status = "",
+    this.amount = 0,
+    this.imageUrl = "",
+    this.deliveryTime = "",
+    this.description = "",
+  }) : super(key: key);
 
   @override
   State<ProductDetailsView> createState() => _ProductDetailsViewState();
@@ -38,24 +63,32 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
     Colors.amber,
   ];
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return _getContentWidget();
   }
 
   Widget _getContentWidget() {
     return Scaffold(
-      body: Stack(
-        children: [
-          Column(
-            children: [
-              _topImageSection(),
-              _productDetailsSection(),
-              _descriptionSection(),
-              _gradientsSection(),
-            ],
-          ),
-          _bottomSection(),
-        ],
+      body: BlocConsumer<ProductCubit, ProductStates>(
+        listener: (context, state) {},
+        builder: (context, state) => Stack(
+          children: [
+            Column(
+              children: [
+                _topImageSection(),
+                _productDetailsSection(),
+                _descriptionSection(),
+                _gradientsSection(),
+              ],
+            ),
+            _bottomSection(),
+          ],
+        ),
       ),
     );
   }
@@ -65,20 +98,23 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
       height: AppSize.s400,
       child: Stack(
         children: [
-        Container(
-          height: AppSize.s320,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: AppColors.primary.withOpacity(AppDecimal.d_3),
-          ),
-        ),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Image.asset(
-            AppAssets.italianPizzaAsset,
+          Container(
             height: AppSize.s320,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: AppColors.primary.withOpacity(AppDecimal.d_3),
+            ),
           ),
-        ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: CachedNetworkImage(
+              height: AppSize.s320,
+              imageUrl: widget.imageUrl,
+              placeholder: (context, url) => Image.asset(AppAssets.imageIcon,height: AppSize.s120,),
+              errorWidget: (context, url, error) =>
+                  Image.asset(AppAssets.imageIcon),
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(
                 horizontal: AppSize.s16, vertical: AppSize.s40),
@@ -86,7 +122,6 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-
                 IconButton(
                     onPressed: () {
                       Navigator.pop(context);
@@ -107,7 +142,6 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
               ],
             ),
           ),
-
         ],
       ),
     );
@@ -122,7 +156,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                AppStrings.sweDish,
+                widget.prodName,
                 style: getBoldTextStyle(fontSize: AppFontSizes.f25),
               ),
               const GetAppCounter(),
@@ -131,7 +165,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
           Row(
             children: [
               Text(
-                "33min .",
+                "${widget.deliveryTime}min.",
                 style: getRegularTextStyle(
                     fontWeight: AppFontWeights.w4, fontSize: AppFontSizes.f14),
               ),
@@ -175,13 +209,18 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
               height: AppSize.s16,
               width: AppSize.s60,
               decoration: BoxDecoration(
-                color: Colors.red.shade100,
-              ),
+                  color: widget.status == AppStrings.trending
+                      ? Colors.red.shade100
+                      : AppColors.primary.withOpacity(AppDecimal.d_2),
+                  borderRadius: BorderRadius.circular(AppSize.s4)),
               child: Center(
                 child: Text(
-                  AppStrings.trending,
+                  widget.status,
                   style: getRegularTextStyle(
-                      color: Colors.red, fontSize: AppFontSizes.f8),
+                      color: widget.status == AppStrings.trending
+                          ? Colors.red
+                          : AppColors.primary,
+                      fontSize: AppFontSizes.f8),
                 ),
               ),
             ),
@@ -205,7 +244,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
             height: AppSize.s8,
           ),
           Text(
-            AppStrings.mealDescription,
+            widget.description,
             maxLines: 4,
             style: getRegularTextStyle(
                 fontSize: AppFontSizes.f14,

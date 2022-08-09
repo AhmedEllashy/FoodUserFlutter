@@ -177,7 +177,7 @@ class _RegistrationViewState extends State<RegistrationView> {
         children: [
           AppTextFormField(
             _emailController,
-            Icons.email,
+            const Icon(Icons.email),
             hint: AppStrings.emailHint,
             label: AppStrings.email,
           ),
@@ -186,7 +186,7 @@ class _RegistrationViewState extends State<RegistrationView> {
           ),
           AppTextFormField(
             _phoneController,
-            Icons.phone,
+            const Icon(Icons.phone),
             hint: AppStrings.phoneHint,
             label: AppStrings.phoneNumber,
           ),
@@ -195,7 +195,7 @@ class _RegistrationViewState extends State<RegistrationView> {
           ),
           AppTextFormField(
             _passwordController,
-            Icons.lock,
+            const Icon(Icons.lock),
             hint: AppStrings.passwordHint,
             isPassword: true,
             label: AppStrings.password,
@@ -215,7 +215,7 @@ class _RegistrationViewState extends State<RegistrationView> {
       if (state is AuthSignUpWitheEmailAndPasswordCompletedState) {
         Navigator.pushNamed(context, AppRoutes.mainRoute);
       } else if (state is AuthSignUpWitheEmailAndPasswordFailedState) {
-        showFlashBar(state.errorMessage, context);
+        getFlashBar(state.errorMessage, context);
       }
     }
   }

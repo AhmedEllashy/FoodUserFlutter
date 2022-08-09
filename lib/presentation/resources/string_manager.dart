@@ -28,7 +28,9 @@ class AppStrings{
   static const String california = '  California,USA';
 
 
-  static const String noData =  "noData";
+  static const String noData =  "No Data";
+  static const String noFavouriteProducts =  "No favourite products yet";
+
   static const String home =  "home";
   static const String search =  "Search";
   static const String notification =  "notification";
@@ -39,17 +41,37 @@ class AppStrings{
   static const String trending = "Trending";
   static const String sweDish = "Swe Dish";
   static const String description = "Description";
-  static const String mealDescription = "The ultimate mix of Chicken together with Mushrooms, Red Onions, Green Peppers, fresh Tomatoes, Olives and melting mozzarella cheese.";
+  static const String mealDescription = "The ultimate mix of Chicken together with Mushrooms, Red Onions, Green Peppers,"
+      " fresh Tomatoes, Olives and melting mozzarella cheese.";
   static const String inGradients = "Ingredients";
   static const String addToCart = "Add to cart";
+  static const String addCard = "Add Card";
+  static const String cardHolder = "Card Holder";
+  static const String nameHere = "Name Here";
+  static const String cardNumber = "Card Number";
+  static const String expiredDate = "Expired Date";
+  static const String cvv = "CVV";
+  static const String saveCard = "Save Card";
+
+
+
+  static const String successAddedToCart = "Product added to cart successfully";
+
+
   static const String cart = "Cart";
+  static const String favourite = "Favourite";
+
   static const String subTotal = "Subtotal";
   static const String delivery = "Delivery";
+  static const String newsAndUpdates = "News & Updates";
+
   static const String total = "Total";
   static const String reviewPayment = "Review payment";
 
 
-  static const String mostPopular = "Most Popular";
+  static const String mostPopular = "Most Popular Foods";
+  static const String all = "All";
+
 
 
 

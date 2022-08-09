@@ -40,7 +40,7 @@ class _LoginViewState extends State<LoginView> {
           }
           if (state is AuthSignWithGoogleFailedState) {
             debugPrint(state.errorMessage);
-            showFlashBar(state.errorMessage, context);
+            getFlashBar(state.errorMessage, context);
           }
         }, builder: (context, state) {
           return Padding(
@@ -158,7 +158,7 @@ class _LoginViewState extends State<LoginView> {
         children: [
           AppTextFormField(
             _emailController,
-            Icons.email,
+            const Icon(Icons.email),
             hint: AppStrings.emailHint,
             label: AppStrings.email,
           ),
@@ -167,7 +167,7 @@ class _LoginViewState extends State<LoginView> {
           ),
           AppTextFormField(
             _passwordController,
-            Icons.lock,
+            const Icon(Icons.lock),
             hint: AppStrings.passwordHint,
             isPassword: true,
             label: AppStrings.password,
@@ -198,7 +198,7 @@ class _LoginViewState extends State<LoginView> {
         Navigator.pushNamed(context, AppRoutes.mainRoute);
       }
       if (state is AuthSignInWitheEmailAndPasswordFailedState) {
-        showFlashBar(state.errorMessage, context);
+        getFlashBar(state.errorMessage, context);
       }
     }
   }

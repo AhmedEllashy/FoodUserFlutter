@@ -20,7 +20,6 @@ class AuthCubit extends Cubit<AuthStates> {
   Future signInWithGoogle() async {
     emit(AuthSignWithGoogleLoadingState());
 
-    try {
       try {
         final UserCredential userCredential =
             await _repository.signWithGoogle();
@@ -38,14 +37,11 @@ class AuthCubit extends Cubit<AuthStates> {
       } catch (e) {
         emit(AuthSignWithGoogleFailedState(e.toString()));
       }
-    } on FirebaseAuthException catch (e) {
-      emit(AuthSignWithGoogleFailedState(e.message.toString()));
-    }
+
   }
   Future signUpWithGoogle() async {
     emit(AuthSignUpWithGoogleLoadingState());
 
-    try {
       try {
         final UserCredential userCredential =
             await _repository.signWithGoogle();
@@ -75,13 +71,9 @@ class AuthCubit extends Cubit<AuthStates> {
       } catch (e) {
         emit(AuthSignWithGoogleFailedState(e.toString()));
       }
-    } on FirebaseAuthException catch (e) {
-      emit(AuthSignWithGoogleFailedState(e.message.toString()));
-    }
   }
   Future signInWithEmailAndPassword(String email ,String password)async{
     emit(AuthSignInWitheEmailAndPasswordLoadingState());
-  try{
     try{
       await _repository.signInWithEmailAndPassword(email, password);
       emit(AuthSignInWitheEmailAndPasswordCompletedState());
@@ -90,15 +82,10 @@ class AuthCubit extends Cubit<AuthStates> {
     }catch(e){
       emit(AuthSignInWitheEmailAndPasswordFailedState(e.toString()));
     }
-  }on FirebaseAuthException catch(e){
-    emit(AuthSignInWitheEmailAndPasswordFailedState(e.message.toString()));
-
-  }
 
   }
   Future signUpWithEmailAndPassword(String email ,String password,String phoneNumber)async{
     emit(AuthSignUpWitheEmailAndPasswordLoadingState());
-    try{
       try{
         UserCredential userCredential = await _repository.signUpWithEmailAndPassword(email, password);
         await FirebaseFirestore.instance
@@ -121,14 +108,9 @@ class AuthCubit extends Cubit<AuthStates> {
       }catch(e){
         emit(AuthSignUpWitheEmailAndPasswordFailedState(e.toString()));
       }
-    }on FirebaseAuthException catch(e){
-      emit(AuthSignUpWitheEmailAndPasswordFailedState(e.message.toString()));
-
-    }
 
   }
   Future signInAnonymously()async{
-   try{
      try{
        await _repository.signInAnonymously();
        emit(AuthSignInAnonymouslyCompletedState());
@@ -136,10 +118,9 @@ class AuthCubit extends Cubit<AuthStates> {
        emit(AuthSignInAnonymouslyFailedState(e.toString()));
 
      }
-   }on FirebaseAuthException catch(e){
-     emit(AuthSignInAnonymouslyFailedState(e.message.toString()));
    }
-  }
+
+
   Future restPassword(String email)async{
     try{
  await _repository.resetPassword(email);

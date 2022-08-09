@@ -12,35 +12,57 @@ class AuthApi {
   late UserCredential user;
 
   Future signWithGoogle() async {
-    GoogleSignInAccount? pickedUser = await googleSignIn.signIn();
-    if (pickedUser == null) {
-      return;
-    }
-    final googleAuth = await pickedUser.authentication;
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
-    UserCredential userCredential =
-        await _auth.signInWithCredential(credential);
+try{
+  GoogleSignInAccount? pickedUser = await googleSignIn.signIn();
+  if (pickedUser == null) {
+    return;
+  }
+  final googleAuth = await pickedUser.authentication;
+  final credential = GoogleAuthProvider.credential(
+    accessToken: googleAuth.accessToken,
+    idToken: googleAuth.idToken,
+  );
+  UserCredential userCredential =
+  await _auth.signInWithCredential(credential);
 
 
-    return userCredential;
+  return userCredential;
+}on FirebaseAuthException catch(e){
+  throw(e.message.toString());
+}
   }
   Future signUpWithEmailAndPassword(String email ,String password)async{
-   UserCredential user =  await _auth.createUserWithEmailAndPassword(email: email, password: password);
-   return user;
+try{
+  UserCredential user =  await _auth.createUserWithEmailAndPassword(email: email, password: password);
+  return user;
+} on FirebaseAuthException catch(e){
+    throw(e.message.toString());
+    }
   }
   Future signInWithEmailAndPassword(String email ,String password)async{
-    UserCredential user =  await _auth.signInWithEmailAndPassword(email: email, password: password);
-    return user;
+   try {
+     UserCredential user = await _auth.signInWithEmailAndPassword(
+         email: email, password: password);
+     return user;
+   } on FirebaseAuthException catch(e){
+    throw(e.message.toString());
+    }
   }
+
   Future signInAnonymously()async{
-    UserCredential user =  await _auth.signInAnonymously();
-    return user;
+    try{
+      UserCredential user =  await _auth.signInAnonymously();
+      return user;
+    } on FirebaseAuthException catch(e){
+    throw(e.message.toString());
+    }
   }
   Future resetPassword({required String email}) async {
-    await _auth
-        .sendPasswordResetEmail(email: email);
+    try{
+      await _auth
+          .sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch(e){
+    throw(e.message.toString());
+    }
   }
 }
