@@ -16,6 +16,10 @@ class AppAssets{
   static const String backgroundImage = '$imageAsset/backgroundImage.png';
   static const String bannerAsset = '$imageAsset/banner.png';
   static const String italianPizzaAsset = '$imageAsset/italian-pizza.png';
+  static const String masterCardAsset = '$imageAsset/logo-mastercard.png';
+  static const String partyAsset = '$imageAsset/party-popper.png';
+
+
 
 
   static const String googleIcon = '$iconAsset/google.png';

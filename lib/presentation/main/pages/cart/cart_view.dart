@@ -7,8 +7,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:food_user/app/constants.dart';
 import 'package:food_user/domain/logic/cart_bloc/cart_cubit.dart';
 import 'package:food_user/domain/logic/cart_bloc/cart_states.dart';
+import 'package:food_user/presentation/check_out/check_out_view.dart';
 import 'package:food_user/presentation/resources/assets_manager.dart';
 import 'package:food_user/presentation/resources/color_manager.dart';
+import 'package:food_user/presentation/resources/route_manager.dart';
 import 'package:food_user/presentation/resources/values_manager.dart';
 import 'package:food_user/presentation/resources/widgets_manager.dart';
 
@@ -41,8 +43,7 @@ class _CartViewState extends State<CartView> {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: BlocConsumer<CartCubit, CartStates>(
-        listener: (context, state) {
-        },
+        listener: (context, state) {},
         builder: (context, state) => SafeArea(
           child: Container(
             // margin: const EdgeInsets.all(AppSize.s10),
@@ -114,8 +115,9 @@ class _CartViewState extends State<CartView> {
                 return Dismissible(
                   key: Key(UniqueKey().toString()),
                   direction: DismissDirection.horizontal,
-                  onDismissed: (dismissDirection){
-                    CartCubit.get(context).deleteFromCart(cartProducts[index].product?.id ?? "");
+                  onDismissed: (dismissDirection) {
+                    CartCubit.get(context)
+                        .deleteFromCart(cartProducts[index].product?.id ?? "");
                   },
                   background: Container(
                     decoration: BoxDecoration(
@@ -186,15 +188,16 @@ class _CartViewState extends State<CartView> {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              _counterRow("9B71c79f6uYW6sLEcVBiQpjBEXD3",state.cartProducts[index]),
+                              _counterRow("9B71c79f6uYW6sLEcVBiQpjBEXD3",
+                                  state.cartProducts[index]),
                               const SizedBox(
                                 height: AppSize.s16,
                               ),
                               Text(
                                 '${AppConstants.dollar}${CartCubit.get(context).calculateQuantityPrice(
-                                      cartProducts[index].product!.price!,
-                                      cartProducts[index].quantity!,
-                                    )}',
+                                  cartProducts[index].product!.price!,
+                                  cartProducts[index].quantity!,
+                                )}',
                                 style: getBoldTextStyle(
                                     fontSize: AppFontSizes.f18),
                               ),
@@ -298,24 +301,32 @@ class _CartViewState extends State<CartView> {
   }
 
   Widget _bottomButton() {
-    return AppButton(AppStrings.reviewPayment, () {});
+    return AppButton(AppStrings.reviewPayment, () {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (ctx) => CheckOutView(
+                    subTotal: CartCubit.get(context).subTotal.toString(),
+                total:CartCubit.get(context).getTotal() ,
+                  )));
+    });
   }
 
-  Widget _counterRow(String uid,Cart cartProducts)  {
+  Widget _counterRow(String uid, Cart cartProducts) {
     int counter = cartProducts.quantity!;
-    String price  = cartProducts.product?.price ?? "0";
-    String prodId = cartProducts.product?.id ?? "" ;
+    String price = cartProducts.product?.price ?? "0";
+    String prodId = cartProducts.product?.id ?? "";
 
     double height = AppSize.s30;
     double width = AppSize.s30;
 
-    return BlocConsumer<CartCubit,CartStates>(
-      listener: (context,state){
-        if(state is UpdateProductInCartQuantityFailedState){
+    return BlocConsumer<CartCubit, CartStates>(
+      listener: (context, state) {
+        if (state is UpdateProductInCartQuantityFailedState) {
           getFlashBar(state.message, context);
         }
       },
-      builder:(context,state)=> Row(
+      builder: (context, state) => Row(
         children: [
           Container(
             height: height,
@@ -330,13 +341,13 @@ class _CartViewState extends State<CartView> {
               padding: EdgeInsets.zero,
               onPressed: () {
                 setState(() {
-                  if(counter != 1){
+                  if (counter != 1) {
                     counter--;
-                    CartCubit.get(context).updateProductInCartQuantity(uid: uid, prodId: prodId, quantity: counter);
-                    CartCubit.get(context).getSubTotal(price,1,operation: "minus");
-
+                    CartCubit.get(context).updateProductInCartQuantity(
+                        uid: uid, prodId: prodId, quantity: counter);
+                    CartCubit.get(context)
+                        .getSubTotal(price, 1, operation: "minus");
                   }
-
                 });
               },
               child: const FaIcon(
@@ -370,10 +381,9 @@ class _CartViewState extends State<CartView> {
               onPressed: () {
                 setState(() {
                   counter++;
-                  CartCubit.get(context).updateProductInCartQuantity(uid: uid, prodId: prodId, quantity: counter);
-                  CartCubit.get(context).getSubTotal(price,1);
-
-
+                  CartCubit.get(context).updateProductInCartQuantity(
+                      uid: uid, prodId: prodId, quantity: counter);
+                  CartCubit.get(context).getSubTotal(price, 1);
                 });
               },
               child: const FaIcon(

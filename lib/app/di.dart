@@ -1,6 +1,7 @@
 import 'package:food_user/data/Data_source/remote_data_source.dart';
 import 'package:food_user/data/Network/app_api.dart';
 import 'package:food_user/data/Network/auth_api.dart';
+import 'package:food_user/data/Network/location_api.dart';
 import 'package:food_user/data/Network/network_info.dart';
 import 'package:food_user/data/Repository/repository.dart';
 import 'package:get_it/get_it.dart';
@@ -25,11 +26,13 @@ Future<void> initAppModule()async{
   instance.registerLazySingleton<AppServiceClient>(() => AppServiceClient());
 
   //Remote Data Source
-  instance.registerLazySingleton<RemoteDataSource>(() =>RemoteDataSourceImplementer(instance(),instance()));
+  instance.registerLazySingleton<RemoteDataSource>(() =>RemoteDataSourceImplementer(instance(),instance(),instance()));
   //Repository
   instance.registerLazySingleton<Repository>(() => RepositoryImplementer(instance(), instance()));
-
+  //Auth Api
   instance.registerLazySingleton<AuthApi>(() => AuthApi());
+  //Location Api
+  instance.registerLazySingleton<LocationManager>(() => LocationManager());
 
 
 }

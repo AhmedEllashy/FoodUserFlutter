@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:food_user/data/Network/auth_api.dart';
+import 'package:food_user/data/Network/location_api.dart';
+import 'package:geocoding/geocoding.dart';
 
+import '../../domain/models/user.dart';
 import '../Network/app_api.dart';
 
 abstract class RemoteDataSource {
@@ -19,14 +22,21 @@ abstract class RemoteDataSource {
   Future<void> setFavouriteProduct(String prodId);
   Future<List<dynamic>> getAllFavouriteProducts();
   Future<void> deleteFavouriteProduct(String prodId);
-
-
+  Future<void> addAddress(String name, String addressName, String phoneNumber,
+      String country, String city, String detailsAboutAddress,double lat, double long);
+  Future<Placemark> getLocation();
+  Future<List<UserAddress>> getAllAddresses();
+  Future<void> editAddress(List<UserAddress> addresses);
+  Future<String> getDefaultAddress();
+  Future<void> setDefaultAddress(String defaultAddress);
 }
 
 class RemoteDataSourceImplementer implements RemoteDataSource {
   final AuthApi _authApi;
   final AppServiceClient _appServiceClient;
-  RemoteDataSourceImplementer(this._authApi, this._appServiceClient);
+  final LocationManager _location;
+
+  RemoteDataSourceImplementer(this._authApi, this._appServiceClient,this._location);
 
   @override
   Future signWithGoogle() async {
@@ -102,6 +112,42 @@ class RemoteDataSourceImplementer implements RemoteDataSource {
   Future<void> deleteFavouriteProduct(String prodId) async{
    await _appServiceClient.deleteFavouriteProduct(prodId);
   }
+
+  @override
+  Future<void> addAddress(String name, String addressName, String phoneNumber, String country, String city, String detailsAboutAddress,double lat ,double long) async{
+    await _appServiceClient.addAddress(name, addressName, phoneNumber, country, city, detailsAboutAddress,lat,long);
+  }
+
+  @override
+  Future<Placemark> getLocation()async{
+    final location = await _location.getGeoLocation();
+    return location;
+  }
+
+  @override
+  Future<List<UserAddress>> getAllAddresses() async{
+    final addresses = await _appServiceClient.getAllAddresses();
+    return addresses;
+  }
+
+  @override
+  Future<void> editAddress(List<UserAddress> addresses)  async{
+    await _appServiceClient.editAddress(addresses);
+  }
+
+  @override
+  Future<String> getDefaultAddress() async{
+     final defaultAddress = await _appServiceClient.getDefaultAddress();
+     return defaultAddress;
+  }
+
+  @override
+  Future<void> setDefaultAddress(String defaultAddress) async{
+    await _appServiceClient.setDefaultAddress(defaultAddress);
+  }
+
+
+
 
 
 }

@@ -1,5 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:food_user/presentation/address/add_address/add_address_view.dart';
+import 'package:food_user/presentation/address/all_addresses/all_addresses_view.dart';
+import 'package:food_user/presentation/address/edit_address/edit_address_view.dart';
+import 'package:food_user/presentation/check_out/check_out_view.dart';
 import 'package:food_user/presentation/login/login_view.dart';
 import 'package:food_user/presentation/main/pages/cart/cart_view.dart';
 import 'package:food_user/presentation/main/pages/favourite/favourite_view.dart';
@@ -12,6 +16,7 @@ import 'package:food_user/presentation/product_details/product_details_view.dart
 import 'package:food_user/presentation/registration/registration_view.dart';
 import 'package:food_user/presentation/resources/string_manager.dart';
 import 'package:food_user/presentation/splash/spalsh_view.dart';
+import 'package:food_user/presentation/success_order/success_order_view.dart';
 
 import '../main/main_view.dart';
 import '../most_popular_products/most_popular_products.dart';
@@ -30,7 +35,17 @@ class AppRoutes{
   static const String favouriteRoute= '/favourite';
   static const String profileRoute= '/profile';
   static const String mostPopularRoute= '/mostPopular';
-  static const String paymentRoute= '/payment';
+  static const String addCardRoute= '/addCard';
+  static const String editCardRoute= '/editCard';
+  static const String allCardsRoute= '/allCards';
+  static const String checkOutRoute= '/checkOut';
+  static const String successRoute= '/success';
+  static const String addAddressRoute= '/addAddress';
+  static const String editAddressRoute= '/editAddress';
+  static const String allAddressesRoute= '/allAddresses';
+
+
+
 
 
 
@@ -67,8 +82,14 @@ class RouteGenerator{
         return MaterialPageRoute(builder:(context)=>const OnBoardingView());
       case AppRoutes.preLoginRoute :
         return MaterialPageRoute(builder:(context)=>const PreLoginView());
-      case AppRoutes.paymentRoute :
+      case AppRoutes.addCardRoute :
         return MaterialPageRoute(builder:(context)=>const AddCardView());
+      case AppRoutes.checkOutRoute :
+        return MaterialPageRoute(builder:(context)=> CheckOutView());
+      case AppRoutes.successRoute :
+        return MaterialPageRoute(builder:(context)=> const SuccessOrderView());
+      case AppRoutes.allAddressesRoute :
+        return MaterialPageRoute(builder:(context)=> const AllAddressesView());
 
         default:
           return undefinedRoute();

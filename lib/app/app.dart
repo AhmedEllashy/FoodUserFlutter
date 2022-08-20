@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:food_user/app/app_prefs.dart';
 import 'package:food_user/data/Repository/repository.dart';
+import 'package:food_user/domain/logic/address_bloc/address_cubit.dart';
 import 'package:food_user/domain/logic/banner_bloc/banner_cubit.dart';
 import 'package:food_user/domain/logic/cart_bloc/cart_cubit.dart';
 import 'package:food_user/domain/logic/favourite_bloc/favourite_cubit.dart';
@@ -42,11 +43,13 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<ProductCubit>(create: (_)=>ProductCubit(_repository)),
         BlocProvider<BannerCubit>(create: (_)=>BannerCubit(_repository)),
         BlocProvider<CartCubit>(create: (_)=>CartCubit(_repository),),
-        BlocProvider<FavouriteCubit>(create: (_)=>FavouriteCubit(_repository),)
+        BlocProvider<FavouriteCubit>(create: (_)=>FavouriteCubit(_repository),),
+        BlocProvider<AddressCubit>(create: (_)=>AddressCubit(_repository),)
+
 
       ],
       child: MaterialApp(
-        initialRoute: AppRoutes.paymentRoute,
+        initialRoute: AppRoutes.allAddressesRoute,
         navigatorKey: navigatorKey,
         onGenerateRoute: RouteGenerator.getRoute,
         theme: getAppTheme(),

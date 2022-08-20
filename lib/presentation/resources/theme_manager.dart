@@ -9,7 +9,9 @@ ThemeData getAppTheme(){
 
     ),
     // canvasColor: Colors.white10,
-
+    // colorScheme: ColorScheme(
+    //   primary: Colors.green, brightness: Brightness.light,
+    // ),
     elevatedButtonTheme:  ElevatedButtonThemeData(
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.all(AppColors.primary),

@@ -23,14 +23,28 @@ class AppStrings{
   static const String login = 'Login';
   static const String retryAgain = 'retryAgain';
   static const String ok = 'ok';
+  static const String apply = 'Apply';
+  static const String couponCode = 'Coupon Code';
+  static const String checkOut = 'Check Out';
+  static const String orderSuccessTitle = "Refer A Friend";
+  static const String orderSuccessDescription = "Your Order has been placed successfully.";
+  static const String returnHome = 'Return Home';
+  static const String addAddress = 'Add Address';
+  static const String editAddress = 'Edit Address';
+  static const String updateAddress = 'Update Address';
+
+  static const String allAddresses = 'All Addresses';
+  static const String country = 'Country';
+  static const String city = 'city';
+  static const String moreDetailsAboutAddress = 'details about Address';
+  static const String makeDefaultAddress = 'Mark as default Address';
+
+
   static const String loading = 'loading';
   static const String location = 'Location';
   static const String california = '  California,USA';
-
-
   static const String noData =  "No Data";
   static const String noFavouriteProducts =  "No favourite products yet";
-
   static const String home =  "home";
   static const String search =  "Search";
   static const String notification =  "notification";
@@ -47,7 +61,9 @@ class AppStrings{
   static const String addToCart = "Add to cart";
   static const String addCard = "Add Card";
   static const String cardHolder = "Card Holder";
-  static const String nameHere = "Name Here";
+  static const String nameHere = " Name Here";
+  static const String name = "Name";
+
   static const String cardNumber = "Card Number";
   static const String expiredDate = "Expired Date";
   static const String cvv = "CVV";

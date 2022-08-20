@@ -61,6 +61,9 @@ class AuthCubit extends Cubit<AuthStates> {
             'name': userCredential.user?.displayName,
             'photoUrl': userCredential.user?.photoURL,
             'date': DateTime.now(),
+            "favourite":[],
+            "addresses":[],
+            "defaultAddress":"",
             //'tokenId': userCredential.user!.getIdToken(),
             'status': 'online',
           });
@@ -94,10 +97,15 @@ class AuthCubit extends Cubit<AuthStates> {
             .set({
           'uid': userCredential.user?.uid,
           'email': email,
+          "name":"",
           'password':password,
           'phoneNumber':phoneNumber,
           'photoUrl': '',
           'date': DateTime.now(),
+          "favourite":[],
+          "addresses":[],
+          "defaultAddress":"",
+
           //'tokenId': userCredential.user!.getIdToken(),
           'status': 'online',
         });

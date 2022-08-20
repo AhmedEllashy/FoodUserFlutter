@@ -2,6 +2,7 @@ import 'package:another_flushbar/flushbar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:food_user/app/constants.dart';
@@ -11,6 +12,7 @@ import 'package:food_user/presentation/resources/color_manager.dart';
 import '../../domain/logic/favourite_bloc/favourite_cubit.dart';
 import '../../domain/logic/favourite_bloc/favourite_states.dart';
 import '../../domain/models/product.dart';
+import '../payment/add_card_view.dart';
 import 'font_manager.dart';
 import 'string_manager.dart';
 import 'styles_manager.dart';
@@ -178,6 +180,7 @@ class _AppTextFormFieldState extends State<AppTextFormField> {
     return SizedBox(
       height: AppSize.s70,
       child: TextFormField(
+
         controller: widget._controller,
         validator: (value) {
           if (value == null || value.isEmpty) {
@@ -495,7 +498,10 @@ class _GetAppCounterState extends State<GetAppCounter> {
 class CardWidget extends StatelessWidget {
   String cardNumber;
   String holderName;
-   CardWidget({Key? key,this.cardNumber = "",this.holderName = ""}) : super(key: key);
+  String expiredDate;
+  String cvv;
+
+  CardWidget({Key? key,this.cardNumber = "",this.holderName = "",this.expiredDate = "",this.cvv = ""}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -534,7 +540,6 @@ class CardWidget extends StatelessWidget {
           Expanded(
             flex: 3,
             child: Container(
-              padding: const EdgeInsets.all(AppSize.s20),
               decoration: const BoxDecoration(
                 color: AppColors.paymentColor,
               ),
@@ -542,35 +547,45 @@ class CardWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text(
-                    "123456789123432423",
-                    style: getBoldTextStyle(
-                        color: AppColors.white, letterSpacing: 2.5),
+                  Padding(
+                    padding: const EdgeInsets.all(AppSize.s20),
+                    child: Text(
+                      cardNumber,
+                      style: getBoldTextStyle(
+                          color: AppColors.white, letterSpacing: 2.5),
+                    ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        children: [
-                          Text(
-                            AppStrings.cardHolder,
-                            style: getBoldTextStyle(
-                                color: AppColors.grey,
-                                letterSpacing: 1,
-                                fontSize: AppFontSizes.f14),
-                          ),
-                          const SizedBox(
-                            height: AppSize.s6,
-                          ),
-                          Text(
-                            AppStrings.nameHere,
-                            style: getBoldTextStyle(
-                                color: AppColors.white, letterSpacing: 1),
-                          ),
-                        ],
-                      ),
-                      const Icon(FontAwesomeIcons.ccMastercard,color: AppColors.primary,size: AppSize.s50,),
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal:AppSize.s14,vertical: AppSize.s16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          children: [
+                            Align(
+                              alignment:Alignment.centerLeft,
+                              child: Text(
+                              AppStrings.cardHolder,
+                                style: getBoldTextStyle(
+                                    color: AppColors.grey,
+                                    letterSpacing: 1,
+                                    fontSize: AppFontSizes.f14),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: AppSize.s6,
+                            ),
+                            Text(
+                              holderName == "" ? AppStrings.nameHere :holderName ,
+                              style: getBoldTextStyle(
+                                  color: AppColors.white, letterSpacing: 1),
+                              overflow: TextOverflow.clip,
+                            ),
+                          ],
+                        ),
+                         Image.asset(AppAssets.masterCardAsset,height: AppSize.s50,),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -581,3 +596,38 @@ class CardWidget extends StatelessWidget {
     );
   }
 }
+Widget topBarSection(String title,BuildContext context) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: [
+
+      Container(
+        height: AppSize.s45,
+        width: AppSize.s45,
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(AppSize.s14),
+        ),
+        child:  Center(
+          child: IconButton(
+            icon: const Icon(
+              Icons.arrow_back_ios_new,
+              textDirection: TextDirection.ltr,
+              size: AppSize.s18,
+              color: AppColors.black,
+            ),
+            onPressed: (){
+              Navigator.pop(context);
+            },
+          ),
+        ),
+      ),
+      Text(
+        title,
+        style: getBoldTextStyle(color: AppColors.grey),
+      ),
+    ],
+  );
+}
+

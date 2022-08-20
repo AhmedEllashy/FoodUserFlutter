@@ -7,8 +7,10 @@ import 'package:food_user/data/Network/failure.dart';
 import 'package:food_user/data/Network/network_info.dart';
 import 'package:food_user/domain/models/cart.dart';
 import 'package:food_user/domain/models/product.dart';
+import 'package:geocoding/geocoding.dart';
 
 import '../../domain/models/banner.dart';
+import '../../domain/models/user.dart';
 import '../Network/error_handler.dart';
 
 abstract class Repository {
@@ -26,6 +28,14 @@ abstract class Repository {
   Future<void> setFavouriteProduct(String prodId);
   Future<dynamic> getAllFavouriteProducts();
   Future<void> deleteFavouriteProduct(String prodId);
+  Future<void> addAddress(String name, String addressName, String phoneNumber,
+      String country, String city, String detailsAboutAddress,double lat, double long);
+  Future<Placemark> getLocation();
+  Future<List<UserAddress>> getAllAddresses();
+  Future<void> editAddress(List<UserAddress> addresses);
+  Future<String> getDefaultAddress();
+  Future<void> setDefaultAddress(String defaultAddress);
+
 }
 
 class RepositoryImplementer implements Repository {
@@ -158,6 +168,64 @@ class RepositoryImplementer implements Repository {
   Future<void> deleteFavouriteProduct(String prodId) async{
     if (await _networkInfo.isConnected) {
       await _remoteDataSource.deleteFavouriteProduct(prodId);
+    } else {
+      throw ErrorMessages.internetError;
+    }
+  }
+
+  @override
+  Future<void> addAddress(String name, String addressName, String phoneNumber, String country, String city, String detailsAboutAddress,double lat,double long) async{
+    if (await _networkInfo.isConnected) {
+      await _remoteDataSource.addAddress(name, addressName, phoneNumber, country, city, detailsAboutAddress,lat,long);
+    } else {
+      throw ErrorMessages.internetError;
+    }
+  }
+
+  @override
+  Future<Placemark> getLocation() async{
+    if (await _networkInfo.isConnected) {
+      final location = await _remoteDataSource.getLocation();
+      return location;
+    } else {
+      throw ErrorMessages.internetError;
+    }
+  }
+
+  @override
+  Future<List<UserAddress>> getAllAddresses() async{
+    if (await _networkInfo.isConnected) {
+      final addresses = await _remoteDataSource.getAllAddresses();
+      return addresses;
+    } else {
+      throw ErrorMessages.internetError;
+    }
+  }
+
+  @override
+  Future<void> editAddress(List<UserAddress> addresses)  async{
+    if (await _networkInfo.isConnected) {
+      await _remoteDataSource.editAddress(addresses);
+    } else {
+      throw ErrorMessages.internetError;
+    }
+  }
+
+  @override
+  Future<String> getDefaultAddress() async{
+    if (await _networkInfo.isConnected) {
+      final defaultAddress =  await _remoteDataSource.getDefaultAddress();
+      return defaultAddress;
+    } else {
+      throw ErrorMessages.internetError;
+    }
+
+  }
+
+  @override
+  Future<void> setDefaultAddress(String defaultAddress) async{
+    if (await _networkInfo.isConnected) {
+      await _remoteDataSource.setDefaultAddress(defaultAddress);
     } else {
       throw ErrorMessages.internetError;
     }
