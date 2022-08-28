@@ -32,12 +32,24 @@ class AppStrings{
   static const String addAddress = 'Add Address';
   static const String editAddress = 'Edit Address';
   static const String updateAddress = 'Update Address';
+  static const String addDeliveryAddress = 'Please add your Delivery Address.';
+  static const String addressAddedSuccessfully = 'Address Added Successfully.';
 
   static const String allAddresses = 'All Addresses';
+  static const String addresses = 'Addresses';
+
+  static const String settings = 'Settings';
+  static const String chat = 'Chat';
+  static const String orders = 'Orders';
+
+
   static const String country = 'Country';
   static const String city = 'city';
   static const String moreDetailsAboutAddress = 'details about Address';
   static const String makeDefaultAddress = 'Mark as default Address';
+  static const String profile = 'Profile';
+
+
 
 
   static const String loading = 'loading';
@@ -48,7 +60,8 @@ class AppStrings{
   static const String home =  "home";
   static const String search =  "Search";
   static const String notification =  "notification";
-  static const String setting =  "setting";
+  static const String preferences =  "Preferences";
+  static const String logOut =  "LogOut";
   static const String services =  "services";
   static const String stores =  "stores";
   static const String changeLanguage = "change_Language";

@@ -43,32 +43,45 @@ class _CartViewState extends State<CartView> {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: BlocConsumer<CartCubit, CartStates>(
-        listener: (context, state) {},
-        builder: (context, state) => SafeArea(
-          child: Container(
-            // margin: const EdgeInsets.all(AppSize.s10),
-            padding: const EdgeInsets.all(AppSize.s20),
-            child: Column(
-              children: [
-                _topBarSection(),
-                const SizedBox(
-                  height: AppSize.s30,
+        listener: (context, state) {
+          if(state is GetFromCartFailedState){
+            getFlashBar(state.message, context);
+          }
+        },
+        builder: (context, state) {
+          if (state is GetFromCartCompletedState) {
+            final cartProducts = state.cartProducts;
+            if(cartProducts.isNotEmpty){
+              return SafeArea(
+                child: Container(
+                  // margin: const EdgeInsets.all(AppSize.s10),
+                  padding: const EdgeInsets.all(AppSize.s20),
+                  child: Column(
+                    children: [
+                      _topBarSection(),
+                      const SizedBox(
+                        height: AppSize.s30,
+                      ),
+                      _cartProductsSection(state),
+                      _bottomFeesSection(),
+                      _bottomButton(cartProducts),
+                    ],
+                  ),
                 ),
-                state is GetFromCartCompletedState
-                    ? _cartProductsSection(state)
-                    : state is GetFromCartLoadingState
-                        ? const Center(
-                            child: CircularProgressIndicator(),
-                          )
-                        : state is GetFromCartFailedState
-                            ? Text(state.message)
-                            : const SizedBox(),
-                _bottomFeesSection(),
-                _bottomButton(),
-              ],
-            ),
-          ),
-        ),
+              );
+            }else{
+              return Center(child: Text("Cart is Empty"),);
+            }
+          }
+          else if (state is GetFromCartLoadingState) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          else{
+            return Container();
+          }
+        },
       ),
     );
   }
@@ -188,8 +201,7 @@ class _CartViewState extends State<CartView> {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              _counterRow("9B71c79f6uYW6sLEcVBiQpjBEXD3",
-                                  state.cartProducts[index]),
+                              _counterRow(state.cartProducts[index]),
                               const SizedBox(
                                 height: AppSize.s16,
                               ),
@@ -300,19 +312,20 @@ class _CartViewState extends State<CartView> {
     );
   }
 
-  Widget _bottomButton() {
+  Widget _bottomButton(List<Cart> cartProducts) {
     return AppButton(AppStrings.reviewPayment, () {
       Navigator.push(
           context,
           MaterialPageRoute(
               builder: (ctx) => CheckOutView(
+                    cartProducts: cartProducts,
                     subTotal: CartCubit.get(context).subTotal.toString(),
-                total:CartCubit.get(context).getTotal() ,
+                    total: CartCubit.get(context).getTotal(),
                   )));
     });
   }
 
-  Widget _counterRow(String uid, Cart cartProducts) {
+  Widget _counterRow(Cart cartProducts) {
     int counter = cartProducts.quantity!;
     String price = cartProducts.product?.price ?? "0";
     String prodId = cartProducts.product?.id ?? "";
@@ -320,81 +333,74 @@ class _CartViewState extends State<CartView> {
     double height = AppSize.s30;
     double width = AppSize.s30;
 
-    return BlocConsumer<CartCubit, CartStates>(
-      listener: (context, state) {
-        if (state is UpdateProductInCartQuantityFailedState) {
-          getFlashBar(state.message, context);
-        }
-      },
-      builder: (context, state) => Row(
-        children: [
-          Container(
-            height: height,
-            width: width,
-            decoration: BoxDecoration(
-              color: AppColors.white,
-              border: const Border.fromBorderSide(
-                  const BorderSide(color: AppColors.black)),
-              borderRadius: BorderRadius.circular(AppSize.s10),
-            ),
-            child: MaterialButton(
-              padding: EdgeInsets.zero,
-              onPressed: () {
-                setState(() {
-                  if (counter != 1) {
-                    counter--;
-                    CartCubit.get(context).updateProductInCartQuantity(
-                        uid: uid, prodId: prodId, quantity: counter);
-                    CartCubit.get(context)
-                        .getSubTotal(price, 1, operation: "minus");
-                  }
-                });
-              },
-              child: const FaIcon(
-                Icons.remove,
-                color: AppColors.black,
-                size: AppSize.s14,
-              ),
-            ),
+    return Row(
+      children: [
+        Container(
+          height: height,
+          width: width,
+          decoration: BoxDecoration(
+            color: AppColors.white,
+            border:
+                const Border.fromBorderSide(BorderSide(color: AppColors.black)),
+            borderRadius: BorderRadius.circular(AppSize.s10),
           ),
-          Container(
-              height: height,
-              width: width,
-              decoration: const BoxDecoration(
-                color: AppColors.white,
-              ),
-              child: Center(
-                child: Text(
-                  '$counter',
-                  style: getBoldTextStyle(color: AppColors.black),
-                ),
-              )),
-          Container(
-            height: height,
-            width: width,
-            decoration: BoxDecoration(
-              color: AppColors.black,
-              borderRadius: BorderRadius.circular(AppSize.s10),
-            ),
-            child: MaterialButton(
-              padding: EdgeInsets.zero,
-              onPressed: () {
-                setState(() {
-                  counter++;
+          child: MaterialButton(
+            padding: EdgeInsets.zero,
+            onPressed: () {
+              setState(() {
+                if (counter != 1) {
+                  counter--;
                   CartCubit.get(context).updateProductInCartQuantity(
-                      uid: uid, prodId: prodId, quantity: counter);
-                  CartCubit.get(context).getSubTotal(price, 1);
-                });
-              },
-              child: const FaIcon(
-                Icons.add,
-                color: AppColors.white,
-                size: AppSize.s14,
-              ),
+                      prodId: prodId, quantity: counter);
+                  CartCubit.get(context)
+                      .getSubTotal(price, 1, operation: "minus");
+                }
+              });
+            },
+            child: const FaIcon(
+              Icons.remove,
+              color: AppColors.black,
+              size: AppSize.s14,
             ),
           ),
-        ],
-      ),
+        ),
+        Container(
+            height: height,
+            width: width,
+            decoration: const BoxDecoration(
+              color: AppColors.white,
+            ),
+            child: Center(
+              child: Text(
+                '$counter',
+                style: getBoldTextStyle(color: AppColors.black),
+              ),
+            )),
+        Container(
+          height: height,
+          width: width,
+          decoration: BoxDecoration(
+            color: AppColors.black,
+            borderRadius: BorderRadius.circular(AppSize.s10),
+          ),
+          child: MaterialButton(
+            padding: EdgeInsets.zero,
+            onPressed: () {
+              setState(() {
+                counter++;
+                CartCubit.get(context).updateProductInCartQuantity(
+                    prodId: prodId, quantity: counter);
+                CartCubit.get(context).getSubTotal(price, 1);
+              });
+            },
+            child: const FaIcon(
+              Icons.add,
+              color: AppColors.white,
+              size: AppSize.s14,
+            ),
+          ),
+        ),
+      ],
     );
   }
 

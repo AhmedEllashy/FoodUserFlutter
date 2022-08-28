@@ -27,9 +27,9 @@ class CartCubit extends Cubit<CartStates> {
   }
 
   void updateProductInCartQuantity(
-      {required String uid, required String prodId, required int quantity}) {
+      { required String prodId, required int quantity}) {
     emit(UpdateProductInCartQuantityLoadingState());
-    _repository.updateProductInCartQuantity(uid, prodId, quantity).then((_) {
+    _repository.updateProductInCartQuantity(prodId, quantity).then((_) {
       emit(UpdateProductInCartQuantityCompletedState());
       getAllCartProducts();
     }, onError: (e) {

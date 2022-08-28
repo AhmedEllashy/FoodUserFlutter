@@ -10,6 +10,7 @@ import 'package:food_user/domain/models/product.dart';
 import 'package:geocoding/geocoding.dart';
 
 import '../../domain/models/banner.dart';
+import '../../domain/models/order.dart';
 import '../../domain/models/user.dart';
 import '../Network/error_handler.dart';
 
@@ -24,7 +25,7 @@ abstract class Repository {
   Future<dynamic> addToCart(String prodId,int quantity);
   Future<List<Cart>> getAllCartProducts();
   Future<dynamic> deleteFromCart(String prodId);
-  Future<void> updateProductInCartQuantity(String uid,String prodId,int quantity);
+  Future<void> updateProductInCartQuantity(String prodId,int quantity);
   Future<void> setFavouriteProduct(String prodId);
   Future<dynamic> getAllFavouriteProducts();
   Future<void> deleteFavouriteProduct(String prodId);
@@ -35,7 +36,9 @@ abstract class Repository {
   Future<void> editAddress(List<UserAddress> addresses);
   Future<String> getDefaultAddress();
   Future<void> setDefaultAddress(String defaultAddress);
-
+  Future<void> addOrder(
+      List<Cart> products, String total, String transactionId,UserAddress deliverAddress);
+  Future<List<Order>> getUserOrders();
 }
 
 class RepositoryImplementer implements Repository {
@@ -132,9 +135,9 @@ class RepositoryImplementer implements Repository {
   }
 
   @override
-  Future<void> updateProductInCartQuantity(String uid, String prodId, int quantity) async{
+  Future<void> updateProductInCartQuantity( String prodId, int quantity) async{
     if (await _networkInfo.isConnected) {
-      await _remoteDataSource.updateProductInCartQuantity(uid, prodId, quantity);
+      await _remoteDataSource.updateProductInCartQuantity(prodId, quantity);
     } else {
       throw ErrorMessages.internetError;
     }
@@ -226,6 +229,25 @@ class RepositoryImplementer implements Repository {
   Future<void> setDefaultAddress(String defaultAddress) async{
     if (await _networkInfo.isConnected) {
       await _remoteDataSource.setDefaultAddress(defaultAddress);
+    } else {
+      throw ErrorMessages.internetError;
+    }
+  }
+
+  @override
+  Future<void> addOrder(List<Cart> products, String total, String transactionId, UserAddress deliverAddress) async{
+    if (await _networkInfo.isConnected) {
+      await _remoteDataSource.addOrder(products, total, transactionId, deliverAddress);
+    } else {
+      throw ErrorMessages.internetError;
+    }
+  }
+
+  @override
+  Future<List<Order>> getUserOrders() async{
+    if (await _networkInfo.isConnected) {
+      final orders = await _remoteDataSource.getUserOrders();
+      return orders;
     } else {
       throw ErrorMessages.internetError;
     }

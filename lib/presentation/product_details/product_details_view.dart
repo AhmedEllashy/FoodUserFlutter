@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:food_user/domain/logic/cart_bloc/cart_cubit.dart';
 import 'package:food_user/domain/logic/product_bloc/product_states.dart';
 import 'package:food_user/presentation/resources/assets_manager.dart';
 import 'package:food_user/presentation/resources/color_manager.dart';
@@ -76,16 +77,12 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
     return Scaffold(
       body: BlocConsumer<ProductCubit, ProductStates>(
         listener: (context, state) {},
-        builder: (context, state) => Stack(
+        builder: (context, state) => ListView(
           children: [
-            Column(
-              children: [
-                _topImageSection(),
-                _productDetailsSection(),
-                _descriptionSection(),
-                _gradientsSection(),
-              ],
-            ),
+            _topImageSection(),
+            _productDetailsSection(),
+            _descriptionSection(),
+            _gradientsSection(),
             _bottomSection(),
           ],
         ),
@@ -321,7 +318,9 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
               padding: const EdgeInsets.all(AppSize.s10),
               child: AppButton(
                 AppStrings.addToCart,
-                () {},
+                () {
+                  //todo add to cart implementation
+                },
                 width: AppSize.s240,
               ),
             )

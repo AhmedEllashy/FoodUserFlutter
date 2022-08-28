@@ -550,7 +550,7 @@ class CardWidget extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(AppSize.s20),
                     child: Text(
-                      cardNumber,
+                      cardNumberFormatter(cardNumber),
                       style: getBoldTextStyle(
                           color: AppColors.white, letterSpacing: 2.5),
                     ),
@@ -596,6 +596,22 @@ class CardWidget extends StatelessWidget {
     );
   }
 }
+String cardNumberFormatter(String inputText) {
+
+    var bufferString = StringBuffer();
+    for (int i = 0; i < inputText.length; i++) {
+      bufferString.write(inputText[i]);
+      var nonZeroIndexValue = i + 1;
+      if (nonZeroIndexValue % 4 == 0 && nonZeroIndexValue != inputText.length) {
+        bufferString.write(' ');
+      }
+    }
+
+    var string = bufferString.toString();
+    return string;
+  }
+
+
 Widget topBarSection(String title,BuildContext context) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,

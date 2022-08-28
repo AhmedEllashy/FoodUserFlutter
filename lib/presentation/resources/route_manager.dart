@@ -8,8 +8,9 @@ import 'package:food_user/presentation/login/login_view.dart';
 import 'package:food_user/presentation/main/pages/cart/cart_view.dart';
 import 'package:food_user/presentation/main/pages/favourite/favourite_view.dart';
 import 'package:food_user/presentation/main/pages/notification/notification_view.dart';
-import 'package:food_user/presentation/main/pages/profile_view.dart';
+import 'package:food_user/presentation/main/pages/profile/profile_view.dart';
 import 'package:food_user/presentation/onboarding/onboarding_view.dart';
+import 'package:food_user/presentation/order/orders_view/orders_view.dart';
 import 'package:food_user/presentation/payment/add_card_view.dart';
 import 'package:food_user/presentation/pre_login/pre_login_view.dart';
 import 'package:food_user/presentation/product_details/product_details_view.dart';
@@ -43,6 +44,7 @@ class AppRoutes{
   static const String addAddressRoute= '/addAddress';
   static const String editAddressRoute= '/editAddress';
   static const String allAddressesRoute= '/allAddresses';
+  static const String ordersRoute= '/orders';
 
 
 
@@ -90,6 +92,8 @@ class RouteGenerator{
         return MaterialPageRoute(builder:(context)=> const SuccessOrderView());
       case AppRoutes.allAddressesRoute :
         return MaterialPageRoute(builder:(context)=> const AllAddressesView());
+      case AppRoutes.ordersRoute :
+        return MaterialPageRoute(builder:(context)=> const OrdersView());
 
         default:
           return undefinedRoute();

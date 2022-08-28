@@ -1,6 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:food_user/app/app.dart';
 import 'package:food_user/data/Repository/repository.dart';
@@ -16,6 +18,8 @@ class AuthCubit extends Cubit<AuthStates> {
   final AppPreferences _appPreferences;
   AuthCubit(this._repository,this._appPreferences) : super(AuthInitialState());
   static AuthCubit get(context) => BlocProvider.of<AuthCubit>(context);
+
+
 
   Future signInWithGoogle() async {
     emit(AuthSignWithGoogleLoadingState());
@@ -66,6 +70,7 @@ class AuthCubit extends Cubit<AuthStates> {
             "defaultAddress":"",
             //'tokenId': userCredential.user!.getIdToken(),
             'status': 'online',
+            'token' : getDeviceToken(),
           });
           _appPreferences.setUserLoggedIn();
           emit(AuthSignWithGoogleSuccessState());
@@ -105,8 +110,7 @@ class AuthCubit extends Cubit<AuthStates> {
           "favourite":[],
           "addresses":[],
           "defaultAddress":"",
-
-          //'tokenId': userCredential.user!.getIdToken(),
+          'token': getDeviceToken(),
           'status': 'online',
         });
 
@@ -130,11 +134,17 @@ class AuthCubit extends Cubit<AuthStates> {
 
 
   Future restPassword(String email)async{
-    try{
+    try{ //todo the func doesn't work
  await _repository.resetPassword(email);
     }on FirebaseAuthException catch(e){
 
     }
+  }
+
+  Future<String?> getDeviceToken()async{
+  final token = await FirebaseMessaging.instance.getToken();
+  debugPrint(token);
+  return token;
   }
 
 }

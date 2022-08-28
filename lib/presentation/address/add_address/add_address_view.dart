@@ -64,6 +64,9 @@ class _AddAddressViewState extends State<AddAddressView> {
             if (state is AddAddressFailedState) {
               getFlashBar(state.error, context);
             }
+            if (state is AddAddressCompletedState) {
+              getFlashBar(AppStrings.addressAddedSuccessfully, context,backgroundColor:AppColors.green);
+            }
             if (state is GetCurrentAddressCompletedState) {
               final location = state.location;
               setState(() {

@@ -12,6 +12,8 @@ class UserModel {
   String ?defaultAddress;
   List<dynamic>? addresses;
   List<dynamic>? favourite;
+  List<dynamic>? orders;
+
   // String loggedInVia;
   // bool isBlocked;
 
@@ -26,6 +28,7 @@ class UserModel {
     this.defaultAddress,
     this.addresses,
     this.favourite,
+    this.orders,
 
   });
 
@@ -42,6 +45,7 @@ class UserModel {
       defaultAddress: data['defaultAddress']??"",
       favourite: data['favourite'] ?? [],
       addresses: data['addresses'] ?? [],
+      orders: data["orders"] ?? [],
     );
   }
 }
@@ -80,3 +84,5 @@ class UserAddress {
     );
   }
 }
+
+

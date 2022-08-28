@@ -71,7 +71,7 @@ class _AllAddressesViewState extends State<AllAddressesView> {
                       ? ListView.separated(
                           shrinkWrap: true,
                           itemBuilder: (context, index) =>
-                              addressWidget(state.addresses, index),
+                              _addressWidget(state.addresses, index),
                           separatorBuilder: (context, index) => const SizedBox(
                                 height: AppSize.s12,
                               ),
@@ -90,7 +90,7 @@ class _AllAddressesViewState extends State<AllAddressesView> {
     );
   }
 
-  Widget addressWidget(List<UserAddress> addresses, int index) {
+  Widget _addressWidget(List<UserAddress> addresses, int index) {
     return InkWell(
       onTap: () {
         debugPrint("$index");

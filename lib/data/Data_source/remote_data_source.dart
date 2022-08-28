@@ -1,8 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:food_user/data/Network/auth_api.dart';
 import 'package:food_user/data/Network/location_api.dart';
+import 'package:food_user/domain/models/order.dart';
 import 'package:geocoding/geocoding.dart';
 
+import '../../domain/models/cart.dart';
+import '../../domain/models/product.dart';
 import '../../domain/models/user.dart';
 import '../Network/app_api.dart';
 
@@ -18,7 +21,7 @@ abstract class RemoteDataSource {
   Future<dynamic> addToCart( String prodId,int quantity);
   Future<List<dynamic>> getAllCartProducts();
   Future<dynamic> deleteFromCart(String prodId);
-  Future<void> updateProductInCartQuantity(String uid,String prodId,int quantity);
+  Future<void> updateProductInCartQuantity(String prodId,int quantity);
   Future<void> setFavouriteProduct(String prodId);
   Future<List<dynamic>> getAllFavouriteProducts();
   Future<void> deleteFavouriteProduct(String prodId);
@@ -29,6 +32,9 @@ abstract class RemoteDataSource {
   Future<void> editAddress(List<UserAddress> addresses);
   Future<String> getDefaultAddress();
   Future<void> setDefaultAddress(String defaultAddress);
+  Future<void> addOrder(
+      List<Cart> products, String total, String transactionId,UserAddress deliverAddress);
+  Future<List<Order>> getUserOrders();
 }
 
 class RemoteDataSourceImplementer implements RemoteDataSource {
@@ -93,8 +99,8 @@ class RemoteDataSourceImplementer implements RemoteDataSource {
     await _appServiceClient.deleteFromCart(prodId);
   }
   @override
-  Future<void> updateProductInCartQuantity(String uid, String prodId, int quantity) async{
-    await _appServiceClient.updateProductInCartQuantity(uid, prodId, quantity);
+  Future<void> updateProductInCartQuantity(String prodId, int quantity) async{
+    await _appServiceClient.updateProductInCartQuantity( prodId, quantity);
   }
 
   @override
@@ -144,6 +150,17 @@ class RemoteDataSourceImplementer implements RemoteDataSource {
   @override
   Future<void> setDefaultAddress(String defaultAddress) async{
     await _appServiceClient.setDefaultAddress(defaultAddress);
+  }
+
+  @override
+  Future<void> addOrder(List<Cart> products, String total, String transactionId, UserAddress deliverAddress) async{
+    await _appServiceClient.addOrder(products, total, transactionId, deliverAddress);
+  }
+
+  @override
+  Future<List<Order>> getUserOrders() async{
+   final orders =  await _appServiceClient.getUserOrders();
+   return orders;
   }
 
 

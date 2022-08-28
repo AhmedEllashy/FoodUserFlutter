@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:food_user/data/Network/firebase_paths.dart';
+import 'package:food_user/domain/models/order.dart';
 
 import '../../domain/models/cart.dart';
 import '../../domain/models/product.dart';
@@ -65,9 +66,8 @@ class AppServiceClient {
     }, SetOptions(merge: true));
   }
 
-  Future<void> updateProductInCartQuantity(
-      String uid, String prodId, int quantity) async {
-    await _db.collection(AppFirebasePaths.users).doc(uid).set({
+  Future<void> updateProductInCartQuantity(String prodId, int quantity) async {
+    await _db.collection(AppFirebasePaths.users).doc(_uid).set({
       "cart": {
         prodId: {
           "id": prodId,
@@ -106,18 +106,70 @@ class AppServiceClient {
     }, SetOptions(merge: true));
   }
 
-  Future<void> addOrder(
-      String orderId, List<Cart> products, String total) async {
-    //todo complete func
+  Future<void> addOrder(List<Cart> products, String total, String transactionId,
+      UserAddress deliverAddress) async {
+    String orderId = const Uuid().v4();
     await _db.collection(AppFirebasePaths.users).doc(_uid).set({
-      "orders": {
-        orderId: {
-          "products": products,
-          "total": total,
-        }
+      "orders": FieldValue.arrayUnion([orderId]),
+    }, SetOptions(merge: true));
+    await _db.collection(AppFirebasePaths.orders).doc(orderId).set({
+      "orderId": orderId,
+      "orderStatus": "processing",
+      "orderTimeStamp": DateTime.now(),
+      "transactionId": "",
+      "total": total,
+    }, SetOptions(merge: true));
+    await _db.collection(AppFirebasePaths.orders).doc(orderId).set({
+      "deliveryAddressDetails": {
+        "name": deliverAddress.name,
+        "addressName": deliverAddress.addressName,
+        "phoneNumber": deliverAddress.phoneNumber,
+        "country": deliverAddress.country,
+        "city": deliverAddress.city,
+        "detailsAboutAddress": deliverAddress.detailsAboutAddress,
+        "lat": deliverAddress.lat,
+        "long": deliverAddress.long,
+        "uid":_uid,
+      },
+
+    }, SetOptions(merge: true));
+    for (var item in products) {
+      await _db.collection(AppFirebasePaths.orders).doc(orderId).set({
+        "products": FieldValue.arrayUnion([
+          {
+            "id": item.product?.id ?? "",
+            "name": item.product?.name ?? "",
+            "category": item.product?.category ?? "",
+            "price": item.product?.price ?? "",
+            "discount": item.product?.discount ?? "",
+            "status": item.product?.status ?? "",
+            "quantity": item.quantity ?? "",
+            "imageUrl": item.product?.imageUrl ?? "",
+          }
+        ])
+      }, SetOptions(merge: true));
+      await _db.collection(AppFirebasePaths.users).doc(_uid).set({
+        "cart": {},
+      }, SetOptions(merge: true));
+    }
+  }
+
+  Future<List<Order>> getUserOrders() async {
+    List<Order> ordersList = [];
+    final firebaseUser =
+        await _db.collection(AppFirebasePaths.users).doc(_uid).get();
+
+    UserModel user = UserModel.fromFireStore(firebaseUser);
+    final userOrders = user.orders;
+    if(userOrders != null){
+      for(var orderId in userOrders.toList()){
+        final jsonOrder =
+        await _db.collection(AppFirebasePaths.orders).doc(orderId).get();
+        final order = Order.fromFireStore(jsonOrder);
+        ordersList.add(order);
       }
-    });
-    // await _db.collection(collectionPath)
+    }
+    return ordersList;
   }
 
   Future<void> addAddress(
@@ -149,6 +201,7 @@ class AppServiceClient {
     List<UserAddress> addressesList = [];
     final firebaseUser =
         await _db.collection(AppFirebasePaths.users).doc(_uid).get();
+
     UserModel user = UserModel.fromFireStore(firebaseUser);
     final userAddresses = user.addresses;
     if (userAddresses != null) {
@@ -170,21 +223,22 @@ class AppServiceClient {
       if (user.addresses!.isNotEmpty) {
         await _db.collection(AppFirebasePaths.users).doc(_uid).set({
           "addresses": FieldValue.delete(),
-        },SetOptions(merge: true));
+        }, SetOptions(merge: true));
         await _db.collection(AppFirebasePaths.users).doc(_uid).set({
-          "addresses": FieldValue.arrayUnion(
-              [for (int i = 0; i < addresses.length; i++) {
-                  "name": addresses[i].name,
-                  "addressName": addresses[i].addressName,
-                  "phoneNumber": addresses[i].phoneNumber,
-                  "country": addresses[i].country,
-                  "city": addresses[i].city,
-                  "detailsAboutAddress": addresses[i].detailsAboutAddress,
-                  "lat": addresses[i].lat,
-                  "long": addresses[i].long,
-
-              }]),
-        },SetOptions(merge: true));
+          "addresses": FieldValue.arrayUnion([
+            for (int i = 0; i < addresses.length; i++)
+              {
+                "name": addresses[i].name,
+                "addressName": addresses[i].addressName,
+                "phoneNumber": addresses[i].phoneNumber,
+                "country": addresses[i].country,
+                "city": addresses[i].city,
+                "detailsAboutAddress": addresses[i].detailsAboutAddress,
+                "lat": addresses[i].lat,
+                "long": addresses[i].long,
+              }
+          ]),
+        }, SetOptions(merge: true));
       }
     }
   }

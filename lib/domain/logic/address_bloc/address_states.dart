@@ -1,4 +1,3 @@
-import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:geocoding/geocoding.dart';
 
 import '../../models/user.dart';

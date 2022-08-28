@@ -47,6 +47,10 @@ dependencies:
   internet_connection_checker:
   get_it:
   firebase_core_web: ^1.7.1
+  dio: ^4.0.6
+  firebase_messaging: ^13.0.0
+  overlay_support: ^2.0.1
+  flutter_local_notifications: ^9.8.0+1
 #local Data
   shared_preferences: ^2.0.15
   cached_network_image: ^3.2.1
@@ -62,7 +66,6 @@ dependencies:
 
   #Payment
   flutter_stripe: ^4.0.0
-  flutter_credit_card: ^3.0.2
   #Location
   geocoding: ^2.0.4
   geolocator: ^9.0.1
