@@ -6,11 +6,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:food_user/app/constants.dart';
 import 'package:food_user/data/Network/firebase_paths.dart';
 import 'package:food_user/domain/logic/banner_bloc/banner_cubit.dart';
-import 'package:food_user/domain/logic/banner_bloc/banner_states.dart';
+import 'package:food_user/domain/logic/banner_bloc/banner_state.dart';
 import 'package:food_user/domain/logic/cart_bloc/cart_cubit.dart';
-import 'package:food_user/domain/logic/cart_bloc/cart_states.dart';
+import 'package:food_user/domain/logic/cart_bloc/cart_state.dart';
 import 'package:food_user/domain/logic/product_bloc/product_cubit.dart';
-import 'package:food_user/domain/logic/product_bloc/product_states.dart';
+import 'package:food_user/domain/logic/product_bloc/product_state.dart';
 import 'package:food_user/presentation/product_details/product_details_view.dart';
 import 'package:food_user/presentation/resources/assets_manager.dart';
 import 'package:food_user/presentation/resources/font_manager.dart';
@@ -30,23 +30,6 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  List<Widget> banners = [
-    Image.asset(
-      AppAssets.bannerAsset,
-      fit: BoxFit.cover,
-      width: double.infinity,
-    ),
-    Image.asset(
-      AppAssets.bannerAsset,
-      fit: BoxFit.cover,
-      width: double.infinity,
-    ),
-    Image.asset(
-      AppAssets.bannerAsset,
-      fit: BoxFit.cover,
-      width: double.infinity,
-    ),
-  ];
   List<Widget> categoriesIcons = [
     Image.asset(AppAssets.pizzaIcon),
     Image.asset(AppAssets.sausageIcon),
@@ -88,7 +71,7 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Widget getContentScreen() {
-    return BlocConsumer<ProductCubit, ProductStates>(
+    return BlocConsumer<ProductCubit, ProductState>(
       listener: (context, state) {
         if (state is GetAllProductFailedState) {
           debugPrint("error : ${state.message}");
@@ -110,15 +93,15 @@ class _HomeViewState extends State<HomeView> {
                 const SizedBox(
                   height: AppSize.s20,
                 ),
-                sectionOne(),
-                sectionTwo(),
-                BlocConsumer<BannerCubit, BannerStates>(
+                _topSection(),
+                _searchSection(),
+                BlocConsumer<BannerCubit, BannerState>(
                   listener: (context, state) {},
                   builder: (context, state) =>
                       state is GetAllBannersLoadingState
                           ? const Center(child: CircularProgressIndicator())
                           : state is GetAllBannersCompletedState
-                              ? bannerSection(state)
+                              ? _bannerSection(state)
                               : const Text(AppStrings.noData),
                 ),
                 const SizedBox(
@@ -153,7 +136,7 @@ class _HomeViewState extends State<HomeView> {
                   height: AppSize.s20,
                 ),
                 state is GetAllProductCompletedState
-                    ? mostPopularProductsSection(state)
+                    ? _mostPopularProductsSection(state)
                     : state is GetAllProductLoadingState
                         ? const Center(
                             child: CircularProgressIndicator(),
@@ -167,7 +150,7 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  Widget sectionOne() {
+  Widget _topSection() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -216,7 +199,7 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  Widget sectionTwo() {
+  Widget _searchSection() {
     return Column(
       children: [
         const SizedBox(
@@ -281,7 +264,7 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  Widget bannerSection(GetAllBannersCompletedState state) {
+  Widget _bannerSection(GetAllBannersCompletedState state) {
     final banners = state.banners;
     return CarouselSlider(
         items: banners.map((banner) {
@@ -292,9 +275,12 @@ class _HomeViewState extends State<HomeView> {
               width: double.infinity,
               fit: BoxFit.cover,
               imageUrl: banner.imageUrl ?? "",
-              placeholder: (context, url) => Image.asset(AppAssets.imageIcon,fit: BoxFit.cover,),
+              placeholder: (context, url) => Image.asset(
+                AppAssets.imageIcon,
+                fit: BoxFit.cover,
+              ),
               errorWidget: (context, url, error) =>
-                  Image.asset(AppAssets.imageIcon,fit: BoxFit.cover),
+                  Image.asset(AppAssets.imageIcon, fit: BoxFit.cover),
             ),
           );
         }).toList(),
@@ -359,15 +345,16 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  Widget mostPopularProductsSection(GetAllProductCompletedState state) {
+  Widget _mostPopularProductsSection(GetAllProductCompletedState state) {
     final products = state.products;
 
-    return BlocConsumer<CartCubit, CartStates>(
+    return BlocConsumer<CartCubit, CartState>(
       listener: (context, state) {
-        if(state is AddToCartCompletedState){
-          getFlashBar(AppStrings.successAddedToCart, context,backgroundColor: AppColors.green);
+        if (state is AddToCartCompletedState) {
+          getFlashBar(AppStrings.successAddedToCart, context,
+              backgroundColor: AppColors.green);
         }
-        if(state is AddToCartFailedState){
+        if (state is AddToCartFailedState) {
           getFlashBar(state.message, context);
         }
       },
@@ -389,6 +376,7 @@ class _HomeViewState extends State<HomeView> {
                         context,
                         MaterialPageRoute(
                             builder: (_) => ProductDetailsView(
+                                  id: products[index].id!,
                                   prodName: products[index].name!,
                                   category: products[index].category!,
                                   price: products[index].price!,

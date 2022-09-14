@@ -6,9 +6,10 @@
    <application
         android:label="food_user"
         android:name="${applicationName}"
+        android:icon="@mipmap/launcher_icon">
 
-        android:icon="@mipmap/ic_launcher">
-
+       <meta-data android:name="com.google.android.maps.v2.API_KEY"
+                  android:value="AIzaSyACiPPZEqeyVU3gOx-w9khoDrXx-SCJXzQ" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -30,6 +31,7 @@
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
               />
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

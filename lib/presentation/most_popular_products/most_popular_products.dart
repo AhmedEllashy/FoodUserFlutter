@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:food_user/domain/logic/product_bloc/product_states.dart';
+import 'package:food_user/domain/logic/product_bloc/product_state.dart';
 
 import '../../domain/logic/product_bloc/product_cubit.dart';
 import '../product_details/product_details_view.dart';
@@ -26,7 +26,7 @@ class _MostPopularProductsViewState extends State<MostPopularProductsView> {
   Widget _getContentScreen(){
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      body: BlocConsumer<ProductCubit,ProductStates>(
+      body: BlocConsumer<ProductCubit,ProductState>(
         listener: (context,state){},
         builder: (context,state)=>SafeArea(
           child: Padding(
@@ -103,6 +103,7 @@ class _MostPopularProductsViewState extends State<MostPopularProductsView> {
           itemBuilder: (context, index) {
             return InkWell(onTap: (){
               Navigator.push(context, MaterialPageRoute(builder: (_)=>ProductDetailsView(
+                id: products[index].id!,
                 prodName: products[index].name!,
                 category:products[index].category! ,
                 price: products[index].price!,

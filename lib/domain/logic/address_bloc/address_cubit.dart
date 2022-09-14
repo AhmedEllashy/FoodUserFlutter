@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:food_user/domain/logic/address_bloc/address_states.dart';
+import 'package:food_user/domain/logic/address_bloc/address_state.dart';
 import 'package:food_user/domain/models/user.dart';
 
 import '../../../data/Repository/repository.dart';
 
-class AddressCubit extends Cubit<AddressStates> {
+class AddressCubit extends Cubit<AddressState> {
   final Repository _repository;
   AddressCubit(this._repository) : super(AddressInitialState());
   static AddressCubit get(context) => BlocProvider.of<AddressCubit>(context);

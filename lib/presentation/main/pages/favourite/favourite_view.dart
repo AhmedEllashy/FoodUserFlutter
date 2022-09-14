@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:food_user/domain/logic/favourite_bloc/favourite_cubit.dart';
-import 'package:food_user/domain/logic/favourite_bloc/favourite_states.dart';
+import 'package:food_user/domain/logic/favourite_bloc/favourite_state.dart';
 import 'package:food_user/presentation/resources/color_manager.dart';
 
 import '../../../../app/constants.dart';
@@ -34,7 +34,7 @@ class _FavouriteViewState extends State<FavouriteView> {
   Widget _getContentScreen() {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      body: BlocConsumer<FavouriteCubit, FavouriteStates>(
+      body: BlocConsumer<FavouriteCubit, FavouriteState>(
         listener: (context, state) {
           if (state is GetAllFavouriteProductsFailedState) {
             getFlashBar(state.message, context);

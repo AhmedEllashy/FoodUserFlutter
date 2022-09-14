@@ -10,6 +10,7 @@ import 'package:food_user/domain/models/product.dart';
 import 'package:geocoding/geocoding.dart';
 
 import '../../domain/models/banner.dart';
+import '../../domain/models/notification.dart';
 import '../../domain/models/order.dart';
 import '../../domain/models/user.dart';
 import '../Network/error_handler.dart';
@@ -22,23 +23,34 @@ abstract class Repository {
   Future resetPassword(String email);
   Future<List<Product>> getAllProducts();
   Future<List<BannerModel>> getAllBanners();
-  Future<dynamic> addToCart(String prodId,int quantity);
+  Future<dynamic> addToCart(String prodId, int quantity);
   Future<List<Cart>> getAllCartProducts();
   Future<dynamic> deleteFromCart(String prodId);
-  Future<void> updateProductInCartQuantity(String prodId,int quantity);
+  Future<void> updateProductInCartQuantity(String prodId, int quantity);
   Future<void> setFavouriteProduct(String prodId);
   Future<dynamic> getAllFavouriteProducts();
   Future<void> deleteFavouriteProduct(String prodId);
-  Future<void> addAddress(String name, String addressName, String phoneNumber,
-      String country, String city, String detailsAboutAddress,double lat, double long);
+  Future<void> addAddress(
+      String name,
+      String addressName,
+      String phoneNumber,
+      String country,
+      String city,
+      String detailsAboutAddress,
+      double lat,
+      double long);
   Future<Placemark> getLocation();
   Future<List<UserAddress>> getAllAddresses();
   Future<void> editAddress(List<UserAddress> addresses);
   Future<String> getDefaultAddress();
   Future<void> setDefaultAddress(String defaultAddress);
-  Future<void> addOrder(
-      List<Cart> products, String total, String transactionId,UserAddress deliverAddress);
+  Future<void> addOrder(List<Cart> products, String total, String transactionId,
+      UserAddress deliverAddress);
   Future<List<Order>> getUserOrders();
+  Future<UserDataModel> getUserData();
+  Future<List<NotificationDataModel>> getUserNotifications();
+  Stream<QuerySnapshot> getChatMessages();
+  Future<void> sendMessage(String messageBody);
 }
 
 class RepositoryImplementer implements Repository {
@@ -116,15 +128,15 @@ class RepositoryImplementer implements Repository {
     }
   }
 
-
   @override
-  Future addToCart( String prodId, int quantity) async{
+  Future addToCart(String prodId, int quantity) async {
     if (await _networkInfo.isConnected) {
       await _remoteDataSource.addToCart(prodId, quantity);
     } else {
       throw ErrorMessages.internetError;
     }
   }
+
   @override
   Future<List<Cart>> getAllCartProducts() async {
     final cartProducts = await _remoteDataSource.getAllCartProducts();
@@ -135,40 +147,44 @@ class RepositoryImplementer implements Repository {
   }
 
   @override
-  Future<void> updateProductInCartQuantity( String prodId, int quantity) async{
+  Future<void> updateProductInCartQuantity(String prodId, int quantity) async {
     if (await _networkInfo.isConnected) {
       await _remoteDataSource.updateProductInCartQuantity(prodId, quantity);
     } else {
       throw ErrorMessages.internetError;
     }
   }
+
   @override
-  Future deleteFromCart(String prodId) async{
+  Future deleteFromCart(String prodId) async {
     if (await _networkInfo.isConnected) {
       await _remoteDataSource.deleteFromCart(prodId);
     } else {
       throw ErrorMessages.internetError;
     }
   }
-  @override
-
 
   @override
-  Future<void> setFavouriteProduct( String prodId) async{
-   await _remoteDataSource.setFavouriteProduct(prodId);
+  @override
+  Future<void> setFavouriteProduct(String prodId) async {
+    await _remoteDataSource.setFavouriteProduct(prodId);
   }
 
   @override
-  Future<List<dynamic>> getAllFavouriteProducts() async{
+  Future<List<dynamic>> getAllFavouriteProducts() async {
     if (await _networkInfo.isConnected) {
-     final favouriteProducts =  await _remoteDataSource.getAllFavouriteProducts();
-    return favouriteProducts.map((product)=>Product.fromJson(product)).toList();
+      final favouriteProducts =
+          await _remoteDataSource.getAllFavouriteProducts();
+      return favouriteProducts
+          .map((product) => Product.fromJson(product))
+          .toList();
     } else {
       throw ErrorMessages.internetError;
     }
   }
+
   @override
-  Future<void> deleteFavouriteProduct(String prodId) async{
+  Future<void> deleteFavouriteProduct(String prodId) async {
     if (await _networkInfo.isConnected) {
       await _remoteDataSource.deleteFavouriteProduct(prodId);
     } else {
@@ -177,16 +193,25 @@ class RepositoryImplementer implements Repository {
   }
 
   @override
-  Future<void> addAddress(String name, String addressName, String phoneNumber, String country, String city, String detailsAboutAddress,double lat,double long) async{
+  Future<void> addAddress(
+      String name,
+      String addressName,
+      String phoneNumber,
+      String country,
+      String city,
+      String detailsAboutAddress,
+      double lat,
+      double long) async {
     if (await _networkInfo.isConnected) {
-      await _remoteDataSource.addAddress(name, addressName, phoneNumber, country, city, detailsAboutAddress,lat,long);
+      await _remoteDataSource.addAddress(name, addressName, phoneNumber,
+          country, city, detailsAboutAddress, lat, long);
     } else {
       throw ErrorMessages.internetError;
     }
   }
 
   @override
-  Future<Placemark> getLocation() async{
+  Future<Placemark> getLocation() async {
     if (await _networkInfo.isConnected) {
       final location = await _remoteDataSource.getLocation();
       return location;
@@ -196,7 +221,7 @@ class RepositoryImplementer implements Repository {
   }
 
   @override
-  Future<List<UserAddress>> getAllAddresses() async{
+  Future<List<UserAddress>> getAllAddresses() async {
     if (await _networkInfo.isConnected) {
       final addresses = await _remoteDataSource.getAllAddresses();
       return addresses;
@@ -206,7 +231,7 @@ class RepositoryImplementer implements Repository {
   }
 
   @override
-  Future<void> editAddress(List<UserAddress> addresses)  async{
+  Future<void> editAddress(List<UserAddress> addresses) async {
     if (await _networkInfo.isConnected) {
       await _remoteDataSource.editAddress(addresses);
     } else {
@@ -215,18 +240,17 @@ class RepositoryImplementer implements Repository {
   }
 
   @override
-  Future<String> getDefaultAddress() async{
+  Future<String> getDefaultAddress() async {
     if (await _networkInfo.isConnected) {
-      final defaultAddress =  await _remoteDataSource.getDefaultAddress();
+      final defaultAddress = await _remoteDataSource.getDefaultAddress();
       return defaultAddress;
     } else {
       throw ErrorMessages.internetError;
     }
-
   }
 
   @override
-  Future<void> setDefaultAddress(String defaultAddress) async{
+  Future<void> setDefaultAddress(String defaultAddress) async {
     if (await _networkInfo.isConnected) {
       await _remoteDataSource.setDefaultAddress(defaultAddress);
     } else {
@@ -235,16 +259,18 @@ class RepositoryImplementer implements Repository {
   }
 
   @override
-  Future<void> addOrder(List<Cart> products, String total, String transactionId, UserAddress deliverAddress) async{
+  Future<void> addOrder(List<Cart> products, String total, String transactionId,
+      UserAddress deliverAddress) async {
     if (await _networkInfo.isConnected) {
-      await _remoteDataSource.addOrder(products, total, transactionId, deliverAddress);
+      await _remoteDataSource.addOrder(
+          products, total, transactionId, deliverAddress);
     } else {
       throw ErrorMessages.internetError;
     }
   }
 
   @override
-  Future<List<Order>> getUserOrders() async{
+  Future<List<Order>> getUserOrders() async {
     if (await _networkInfo.isConnected) {
       final orders = await _remoteDataSource.getUserOrders();
       return orders;
@@ -253,7 +279,40 @@ class RepositoryImplementer implements Repository {
     }
   }
 
+  @override
+  Future<UserDataModel> getUserData() async {
+    if (await _networkInfo.isConnected) {
+      final user = await _remoteDataSource.getUserData();
+      return UserDataModel.fromFireStore(user);
+    } else {
+      throw (ErrorMessages.internetError);
+    }
+  }
 
+  @override
+  Future<List<NotificationDataModel>> getUserNotifications() async {
+    if (await _networkInfo.isConnected) {
+      final notifications = await _remoteDataSource.getUserNotifications();
+      return notifications
+          .map((notification) =>
+              NotificationDataModel.formFireStore(notification))
+          .toList();
+    } else {
+      throw (ErrorMessages.internetError);
+    }
+  }
 
+  @override
+  Stream<QuerySnapshot> getChatMessages() {
+    return _remoteDataSource.getChatMessages();
+  }
 
+  @override
+  Future<void> sendMessage(String messageBody) async{
+    if (await _networkInfo.isConnected) {
+      _remoteDataSource.sendMessage(messageBody);
+    } else {
+      throw (ErrorMessages.internetError);
+    }
+  }
 }

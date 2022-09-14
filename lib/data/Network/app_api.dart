@@ -13,17 +13,17 @@ class AppServiceClient {
   final _uid =
       FirebaseAuth.instance.currentUser?.uid ?? "uIzka0jiZHPLm9THiDvwqLmi2uf2";
   Future<List<dynamic>> getAllPopularProducts() async {
-    final products = await _db.collection(AppFirebasePaths.products).get();
+    final products = await _db.collection(FirestoreConstants.products).get();
     return products.docs;
   }
 
   Future<List<dynamic>> getAllBanners() async {
-    final products = await _db.collection(AppFirebasePaths.banners).get();
+    final products = await _db.collection(FirestoreConstants.banners).get();
     return products.docs;
   }
 
   Future<dynamic> addToCart(String prodId, int quantity) async {
-    await _db.collection(AppFirebasePaths.users).doc(_uid).set({
+    await _db.collection(FirestoreConstants.users).doc(_uid).set({
       "cart": {
         prodId: {
           "id": prodId,
@@ -36,16 +36,16 @@ class AppServiceClient {
   Future<List<dynamic>> getAllCartProducts() async {
     List<Map<String, dynamic>> cartProducts = [];
     final firebaseUser =
-        await _db.collection(AppFirebasePaths.users).doc(_uid).get();
+        await _db.collection(FirestoreConstants.users).doc(_uid).get();
 
-    UserModel user = UserModel.fromFireStore(firebaseUser);
+    UserDataModel user = UserDataModel.fromFireStore(firebaseUser);
     if (user.cart?.values == null) {
       return [];
     } else {
       for (var data in user.cart!.values) {
         final prodId = data['id'];
         final product =
-            await _db.collection(AppFirebasePaths.products).doc(prodId).get();
+            await _db.collection(FirestoreConstants.products).doc(prodId).get();
 
         final quantity = data['quantity'];
         Map<String, dynamic> cartData = {
@@ -59,7 +59,7 @@ class AppServiceClient {
   }
 
   Future<dynamic> deleteFromCart(String prodId) async {
-    await _db.collection(AppFirebasePaths.users).doc(_uid).set({
+    await _db.collection(FirestoreConstants.users).doc(_uid).set({
       "cart": {
         prodId: FieldValue.delete(),
       }
@@ -67,7 +67,7 @@ class AppServiceClient {
   }
 
   Future<void> updateProductInCartQuantity(String prodId, int quantity) async {
-    await _db.collection(AppFirebasePaths.users).doc(_uid).set({
+    await _db.collection(FirestoreConstants.users).doc(_uid).set({
       "cart": {
         prodId: {
           "id": prodId,
@@ -78,20 +78,20 @@ class AppServiceClient {
   }
 
   Future<void> setFavouriteProduct(String prodId) async {
-    await _db.collection(AppFirebasePaths.users).doc(_uid).set({
+    await _db.collection(FirestoreConstants.users).doc(_uid).set({
       "favourite": FieldValue.arrayUnion([prodId])
     }, SetOptions(merge: true));
   }
 
   Future<List<dynamic>> getAllFavouriteProducts() async {
     final favouriteProducts = [];
-    final user = await _db.collection(AppFirebasePaths.users).doc(_uid).get();
-    UserModel userModel = UserModel.fromFireStore(user);
+    final user = await _db.collection(FirestoreConstants.users).doc(_uid).get();
+    UserDataModel userModel = UserDataModel.fromFireStore(user);
     final favouriteProductsId = userModel.favourite;
     if (favouriteProductsId != null) {
       for (var prodId in favouriteProductsId) {
         final product =
-            await _db.collection(AppFirebasePaths.products).doc(prodId).get();
+            await _db.collection(FirestoreConstants.products).doc(prodId).get();
         favouriteProducts.add(product);
       }
       return favouriteProducts;
@@ -101,7 +101,7 @@ class AppServiceClient {
   }
 
   Future<void> deleteFavouriteProduct(String prodId) async {
-    await _db.collection(AppFirebasePaths.users).doc(_uid).set({
+    await _db.collection(FirestoreConstants.users).doc(_uid).set({
       "favourite": FieldValue.arrayRemove([prodId])
     }, SetOptions(merge: true));
   }
@@ -109,17 +109,15 @@ class AppServiceClient {
   Future<void> addOrder(List<Cart> products, String total, String transactionId,
       UserAddress deliverAddress) async {
     String orderId = const Uuid().v4();
-    await _db.collection(AppFirebasePaths.users).doc(_uid).set({
+    await _db.collection(FirestoreConstants.users).doc(_uid).set({
       "orders": FieldValue.arrayUnion([orderId]),
     }, SetOptions(merge: true));
-    await _db.collection(AppFirebasePaths.orders).doc(orderId).set({
+    await _db.collection(FirestoreConstants.orders).doc(orderId).set({
       "orderId": orderId,
-      "orderStatus": "processing",
+      "orderStatus": "Processing",
       "orderTimeStamp": DateTime.now(),
       "transactionId": "",
       "total": total,
-    }, SetOptions(merge: true));
-    await _db.collection(AppFirebasePaths.orders).doc(orderId).set({
       "deliveryAddressDetails": {
         "name": deliverAddress.name,
         "addressName": deliverAddress.addressName,
@@ -129,12 +127,12 @@ class AppServiceClient {
         "detailsAboutAddress": deliverAddress.detailsAboutAddress,
         "lat": deliverAddress.lat,
         "long": deliverAddress.long,
-        "uid":_uid,
+        "uid": _uid,
       },
-
     }, SetOptions(merge: true));
+
     for (var item in products) {
-      await _db.collection(AppFirebasePaths.orders).doc(orderId).set({
+      await _db.collection(FirestoreConstants.orders).doc(orderId).set({
         "products": FieldValue.arrayUnion([
           {
             "id": item.product?.id ?? "",
@@ -148,7 +146,7 @@ class AppServiceClient {
           }
         ])
       }, SetOptions(merge: true));
-      await _db.collection(AppFirebasePaths.users).doc(_uid).set({
+      await _db.collection(FirestoreConstants.users).doc(_uid).set({
         "cart": {},
       }, SetOptions(merge: true));
     }
@@ -157,14 +155,14 @@ class AppServiceClient {
   Future<List<Order>> getUserOrders() async {
     List<Order> ordersList = [];
     final firebaseUser =
-        await _db.collection(AppFirebasePaths.users).doc(_uid).get();
+        await _db.collection(FirestoreConstants.users).doc(_uid).get();
 
-    UserModel user = UserModel.fromFireStore(firebaseUser);
+    UserDataModel user = UserDataModel.fromFireStore(firebaseUser);
     final userOrders = user.orders;
-    if(userOrders != null){
-      for(var orderId in userOrders.toList()){
+    if (userOrders != null) {
+      for (var orderId in userOrders.toList()) {
         final jsonOrder =
-        await _db.collection(AppFirebasePaths.orders).doc(orderId).get();
+            await _db.collection(FirestoreConstants.orders).doc(orderId).get();
         final order = Order.fromFireStore(jsonOrder);
         ordersList.add(order);
       }
@@ -181,7 +179,7 @@ class AppServiceClient {
       String detailsAboutAddress,
       double lat,
       double long) async {
-    await _db.collection(AppFirebasePaths.users).doc(_uid).set({
+    await _db.collection(FirestoreConstants.users).doc(_uid).set({
       "addresses": FieldValue.arrayUnion([
         {
           "name": name,
@@ -200,9 +198,9 @@ class AppServiceClient {
   Future<List<UserAddress>> getAllAddresses() async {
     List<UserAddress> addressesList = [];
     final firebaseUser =
-        await _db.collection(AppFirebasePaths.users).doc(_uid).get();
+        await _db.collection(FirestoreConstants.users).doc(_uid).get();
 
-    UserModel user = UserModel.fromFireStore(firebaseUser);
+    UserDataModel user = UserDataModel.fromFireStore(firebaseUser);
     final userAddresses = user.addresses;
     if (userAddresses != null) {
       if (userAddresses.isNotEmpty) {
@@ -217,14 +215,14 @@ class AppServiceClient {
 
   Future<void> editAddress(List<UserAddress> addresses) async {
     final firebaseUser =
-        await _db.collection(AppFirebasePaths.users).doc(_uid).get();
-    UserModel user = UserModel.fromFireStore(firebaseUser);
+        await _db.collection(FirestoreConstants.users).doc(_uid).get();
+    UserDataModel user = UserDataModel.fromFireStore(firebaseUser);
     if (user.addresses != null) {
       if (user.addresses!.isNotEmpty) {
-        await _db.collection(AppFirebasePaths.users).doc(_uid).set({
+        await _db.collection(FirestoreConstants.users).doc(_uid).set({
           "addresses": FieldValue.delete(),
         }, SetOptions(merge: true));
-        await _db.collection(AppFirebasePaths.users).doc(_uid).set({
+        await _db.collection(FirestoreConstants.users).doc(_uid).set({
           "addresses": FieldValue.arrayUnion([
             for (int i = 0; i < addresses.length; i++)
               {
@@ -245,15 +243,88 @@ class AppServiceClient {
 
   Future<String> getDefaultAddress() async {
     final firebaseUser =
-        await _db.collection(AppFirebasePaths.users).doc(_uid).get();
-    UserModel user = UserModel.fromFireStore(firebaseUser);
+        await _db.collection(FirestoreConstants.users).doc(_uid).get();
+    UserDataModel user = UserDataModel.fromFireStore(firebaseUser);
     final defaultAddress = user.defaultAddress;
     return defaultAddress!;
   }
 
   Future<void> setDefaultAddress(String defaultAddress) async {
-    await _db.collection(AppFirebasePaths.users).doc(_uid).set({
+    await _db.collection(FirestoreConstants.users).doc(_uid).set({
       "defaultAddress": defaultAddress,
     }, SetOptions(merge: true));
+  }
+
+  Future<dynamic> getUserData() async {
+    final firebaseUser =
+        await _db.collection(FirestoreConstants.users).doc(_uid).get();
+    return firebaseUser;
+  }
+
+  Future<List<dynamic>> getUserNotifications() async {
+    final userNotifications = await _db
+        .collection(FirestoreConstants.users)
+        .doc(_uid)
+        .collection(FirestoreConstants.notification)
+        .get();
+    return userNotifications.docs;
+  }
+
+  Stream<QuerySnapshot> getChatMessages() {
+    return _db
+        .collection(FirestoreConstants.usersMessages)
+        .doc(_uid)
+        .collection(FirestoreConstants.chat)
+        .orderBy("timestamp", descending: true)
+        .snapshots();
+  }
+
+  Future<void> sendMessage(String messageBody) async {
+    final DocumentSnapshot messageCollectionUser =
+        await _db.collection(FirestoreConstants.usersMessages).doc(_uid).get();
+    if (messageCollectionUser.exists) {
+      await _db
+          .collection(FirestoreConstants.usersMessages)
+          .doc(_uid)
+          .collection(FirestoreConstants.chat)
+          .add({
+        "senderId": _uid,
+        "receiverId": "",
+        "messageBody": messageBody,
+        "timestamp": DateTime.now(),
+      });
+      await _db.collection(FirestoreConstants.adminMessages).add({
+        "senderId": _uid,
+        "receiverId": "",
+        "messageBody": messageBody,
+        "timestamp": DateTime.now(),
+      });
+    } else {
+      final firebaseUser =
+          await _db.collection(FirestoreConstants.users).doc(_uid).get();
+      UserDataModel user = UserDataModel.fromFireStore(firebaseUser);
+      await _db.collection(FirestoreConstants.usersMessages).doc(_uid).set({
+        'uid': user.uid,
+        'email': user.email,
+        'name': user.name,
+        'photoUrl': user.imageUrl,
+      });
+      await _db
+          .collection(FirestoreConstants.usersMessages)
+          .doc(_uid)
+          .collection(FirestoreConstants.chat)
+          .add({
+        "senderId": _uid,
+        "receiverId": "",
+        "messageBody": messageBody,
+        "timestamp": DateTime.now(),
+      });
+      await _db.collection(FirestoreConstants.adminMessages).add({
+        "senderId": _uid,
+        "receiverId": "",
+        "messageBody": messageBody,
+        "timestamp": DateTime.now(),
+      });
+    }
   }
 }

@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:food_user/app/constants.dart';
 import 'package:food_user/domain/logic/cart_bloc/cart_cubit.dart';
-import 'package:food_user/domain/logic/cart_bloc/cart_states.dart';
+import 'package:food_user/domain/logic/cart_bloc/cart_state.dart';
 import 'package:food_user/presentation/check_out/check_out_view.dart';
 import 'package:food_user/presentation/resources/assets_manager.dart';
 import 'package:food_user/presentation/resources/color_manager.dart';
@@ -31,8 +31,9 @@ class _CartViewState extends State<CartView> {
   @override
   void initState() {
     super.initState();
-    CartCubit.get(context).getAllCartProducts(firstTime: true);
+    CartCubit.get(context).getAllCartProducts();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -42,19 +43,18 @@ class _CartViewState extends State<CartView> {
   Widget _getContentScreen() {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      body: BlocConsumer<CartCubit, CartStates>(
+      body: BlocConsumer<CartCubit, CartState>(
         listener: (context, state) {
-          if(state is GetFromCartFailedState){
+          if (state is GetFromCartFailedState) {
             getFlashBar(state.message, context);
           }
         },
         builder: (context, state) {
           if (state is GetFromCartCompletedState) {
             final cartProducts = state.cartProducts;
-            if(cartProducts.isNotEmpty){
+            if (cartProducts.isNotEmpty) {
               return SafeArea(
                 child: Container(
-                  // margin: const EdgeInsets.all(AppSize.s10),
                   padding: const EdgeInsets.all(AppSize.s20),
                   child: Column(
                     children: [
@@ -69,16 +69,16 @@ class _CartViewState extends State<CartView> {
                   ),
                 ),
               );
-            }else{
-              return Center(child: Text("Cart is Empty"),);
+            } else {
+              return Center(
+                child: Text("Cart is Empty"),
+              );
             }
-          }
-          else if (state is GetFromCartLoadingState) {
+          } else if (state is GetFromCartLoadingState) {
             return const Center(
               child: CircularProgressIndicator(),
             );
-          }
-          else{
+          } else {
             return Container();
           }
         },
@@ -131,6 +131,14 @@ class _CartViewState extends State<CartView> {
                   onDismissed: (dismissDirection) {
                     CartCubit.get(context)
                         .deleteFromCart(cartProducts[index].product?.id ?? "");
+                    double subTotal = CartCubit.get(context).subTotal;
+                    double productPrice = double.parse(
+                        CartCubit.get(context).calculateQuantityPrice(
+                      cartProducts[index].product!.price!,
+                      cartProducts[index].quantity!,
+                    ));
+                    subTotal -= productPrice;
+                    CartCubit.get(context).getTotal();
                   },
                   background: Container(
                     decoration: BoxDecoration(

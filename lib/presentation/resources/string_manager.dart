@@ -17,6 +17,7 @@ class AppStrings{
   static const String password = 'password';
   static const String passwordHint = 'Enter your password';
   static const String forgotPassword= 'Forgot password ?';
+  static const String save= 'Save';
 
   static const String phoneNumber = "Phone Number";
   static const String phoneHint = "Enter your phone Number";
@@ -41,6 +42,13 @@ class AppStrings{
   static const String settings = 'Settings';
   static const String chat = 'Chat';
   static const String orders = 'Orders';
+  static const String orderTracking = "Order Tracking";
+
+
+  static const String emptyOrders = 'There is no orders yet.';
+  static const String active = 'Active';
+  static const String completed = 'Completed';
+  static const String cancelled = 'Cancelled';
 
 
   static const String country = 'Country';

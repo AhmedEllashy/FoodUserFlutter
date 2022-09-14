@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:food_user/domain/logic/cart_bloc/cart_cubit.dart';
-import 'package:food_user/domain/logic/product_bloc/product_states.dart';
+import 'package:food_user/domain/logic/cart_bloc/cart_state.dart';
+import 'package:food_user/domain/logic/product_bloc/product_state.dart';
 import 'package:food_user/presentation/resources/assets_manager.dart';
 import 'package:food_user/presentation/resources/color_manager.dart';
 import 'package:food_user/presentation/resources/font_manager.dart';
@@ -16,6 +17,7 @@ import '../resources/string_manager.dart';
 import '../resources/styles_manager.dart';
 
 class ProductDetailsView extends StatefulWidget {
+  String id;
   String prodName;
   String category;
   String price;
@@ -28,6 +30,7 @@ class ProductDetailsView extends StatefulWidget {
 
   ProductDetailsView({
     Key? key,
+    this.id = "",
     this.prodName = "",
     this.category = "",
     this.price = "",
@@ -44,6 +47,9 @@ class ProductDetailsView extends StatefulWidget {
 }
 
 class _ProductDetailsViewState extends State<ProductDetailsView> {
+  int counter = 1;
+  double height = AppSize.s35;
+  double width = AppSize.s35;
   List<Widget> gradients = [
     Image.asset(
       AppAssets.onionIcon,
@@ -75,7 +81,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
 
   Widget _getContentWidget() {
     return Scaffold(
-      body: BlocConsumer<ProductCubit, ProductStates>(
+      body: BlocConsumer<ProductCubit, ProductState>(
         listener: (context, state) {},
         builder: (context, state) => ListView(
           children: [
@@ -107,7 +113,10 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
             child: CachedNetworkImage(
               height: AppSize.s320,
               imageUrl: widget.imageUrl,
-              placeholder: (context, url) => Image.asset(AppAssets.imageIcon,height: AppSize.s120,),
+              placeholder: (context, url) => Image.asset(
+                AppAssets.imageIcon,
+                height: AppSize.s120,
+              ),
               errorWidget: (context, url, error) =>
                   Image.asset(AppAssets.imageIcon),
             ),
@@ -144,6 +153,75 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
     );
   }
 
+  Widget Counter() {
+    return Container(
+      child: Row(
+        children: [
+          Container(
+            height: height,
+            width: width,
+            decoration: const BoxDecoration(
+              color: AppColors.primary,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(AppSize.s10),
+                bottomLeft: Radius.circular(AppSize.s10),
+              ),
+            ),
+            child: MaterialButton(
+              padding: EdgeInsets.zero,
+              onPressed: () {
+                setState(() {
+                  counter--;
+                });
+              },
+              child: const FaIcon(
+                Icons.remove,
+                color: AppColors.white,
+                size: AppSize.s14,
+              ),
+            ),
+          ),
+          Container(
+              height: height,
+              width: width,
+              decoration: const BoxDecoration(
+                color: AppColors.primary,
+              ),
+              child: Center(
+                child: Text(
+                  '$counter',
+                  style: getBoldTextStyle(color: AppColors.white),
+                ),
+              )),
+          Container(
+            height: height,
+            width: width,
+            decoration: const BoxDecoration(
+              color: AppColors.primary,
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(AppSize.s10),
+                bottomRight: Radius.circular(AppSize.s10),
+              ),
+            ),
+            child: MaterialButton(
+              padding: EdgeInsets.zero,
+              onPressed: () {
+                setState(() {
+                  counter++;
+                });
+              },
+              child: const FaIcon(
+                Icons.add,
+                color: AppColors.white,
+                size: AppSize.s14,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _productDetailsSection() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSize.s20),
@@ -156,7 +234,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                 widget.prodName,
                 style: getBoldTextStyle(fontSize: AppFontSizes.f25),
               ),
-              const GetAppCounter(),
+              Counter(),
             ],
           ),
           Row(
@@ -314,15 +392,28 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                 ),
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.all(AppSize.s10),
-              child: AppButton(
-                AppStrings.addToCart,
-                () {
-                  //todo add to cart implementation
-                },
-                width: AppSize.s240,
-              ),
+            BlocConsumer<CartCubit, CartState>(
+              listener: (context, state) {
+                if (state is AddToCartFailedState) {
+                  getFlashBar(state.message, context);
+                } else if (state is AddToCartCompletedState) {
+                  getFlashBar(AppStrings.successAddedToCart, context,
+                      backgroundColor: AppColors.green);
+                }
+              },
+              builder: (context, state) {
+                return Padding(
+                  padding: const EdgeInsets.all(AppSize.s10),
+                  child: AppButton(
+                    AppStrings.addToCart,
+                    () {
+                      CartCubit.get(context)
+                          .addToCart(prodId: widget.id, quantity: counter);
+                    },
+                    width: AppSize.s240,
+                  ),
+                );
+              },
             )
           ],
         ),

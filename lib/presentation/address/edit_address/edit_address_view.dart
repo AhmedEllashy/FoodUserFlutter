@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:food_user/domain/logic/address_bloc/address_states.dart';
+import 'package:food_user/domain/logic/address_bloc/address_state.dart';
 import 'package:food_user/presentation/resources/string_manager.dart';
 import 'package:food_user/presentation/resources/values_manager.dart';
 import 'package:food_user/presentation/resources/widgets_manager.dart';
@@ -61,7 +61,7 @@ class _EditAddressViewState extends State<EditAddressView> {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: SafeArea(
-        child: BlocConsumer<AddressCubit, AddressStates>(
+        child: BlocConsumer<AddressCubit, AddressState>(
           listener: (context, state) {
             if (state is EditAddressFailedState) {
               getFlashBar(state.error, context);
@@ -184,7 +184,7 @@ class _EditAddressViewState extends State<EditAddressView> {
       },
     );
   }
-  void _updateAddress(AddressStates state) {
+  void _updateAddress(AddressState state) {
     if (_formKey.currentState!.validate()) {
       AddressCubit.get(context).editAddress(
         widget.index,

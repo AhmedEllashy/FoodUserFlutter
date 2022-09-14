@@ -69,6 +69,7 @@ class _PreLoginViewState extends State<PreLoginView> {
                     () {
                       Navigator.pushNamed(context, AppRoutes.registerRoute);
                     },
+                    textColor: AppColors.black,
                     hasShadow: true,
                     width: AppSize.s150,
                     height: AppSize.s60,

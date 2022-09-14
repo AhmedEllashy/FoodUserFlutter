@@ -1,8 +1,6 @@
-const { firestore } = require("firebase-admin");
-const { firebaseConfig } = require("firebase-functions");
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
-const stripe = require("stripe");
+const stripe = require("stripe")("sk_test_51LTfx1E9NMiJV8v5VKXtNVVqmmNztLwIzy3E3j458KU4ORU1VhqaTg1lj5gwSYAgiKMBkn767yyA6v8MMY5xKF0I00allPUqpN");
 
 admin.initializeApp(functions.config().functions);
 
@@ -54,19 +52,22 @@ exports.stripePaymentIntentRequest = functions.https.onRequest(async (req, res) 
 
 
 //New Order Func
-exports.orderPlaced = functions.firestore.document('Orders/{orderId}').onCreate(async (doc, context) => 
+exports.orderPlaced = functions.firestore.document('orders/{orderId}').onCreate(async (snapshot, context) => 
 {
 
     const orderId = context.params.orderId;
-    const orderStatus = doc.data().orderStatus;
-    const uid = doc.data().deliveryAddressDetails.uid;
+    const orderStatus = snapshot.data().orderStatus;
+    const uid = snapshot.data().deliveryAddressDetails.uid;
+
+
+
 
     var payload = null;
 
     payload = {
         notification: {
             title: 'Your Order Placed Successfully',
-            body: orderId,
+            body: "Thanks for choosing us",
             sound: 'default',
         },
         data: {
@@ -91,8 +92,8 @@ exports.orderPlaced = functions.firestore.document('Orders/{orderId}').onCreate(
             timestamp: admin.firestore.Timestamp.fromDate(new Date())
         };
 
-        await db.collection('UserNotifications').doc(uid).set({
-            'notifications': admin.firestore.FieldValue.arrayUnion(notificationMap),
+        await admin.firestore().collection('users').doc(uid).collection("notification").add({
+            'notification': notificationMap,
             'unread': true,
         }, {
             merge: true
@@ -114,3 +115,10 @@ exports.orderPlaced = functions.firestore.document('Orders/{orderId}').onCreate(
 });
 
 
+function createUUID() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = Math.random() * 16 | 0,
+            v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}

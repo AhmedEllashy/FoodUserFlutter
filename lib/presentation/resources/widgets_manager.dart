@@ -10,7 +10,7 @@ import 'package:food_user/presentation/resources/assets_manager.dart';
 import 'package:food_user/presentation/resources/color_manager.dart';
 
 import '../../domain/logic/favourite_bloc/favourite_cubit.dart';
-import '../../domain/logic/favourite_bloc/favourite_states.dart';
+import '../../domain/logic/favourite_bloc/favourite_state.dart';
 import '../../domain/models/product.dart';
 import '../payment/add_card_view.dart';
 import 'font_manager.dart';
@@ -275,7 +275,7 @@ class GetProductWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<FavouriteCubit,FavouriteStates>(
+    return BlocBuilder<FavouriteCubit,FavouriteState>(
       builder: (context,state)=>Container(
         padding: const EdgeInsets.symmetric(horizontal: AppSize.s8),
         decoration: BoxDecoration(

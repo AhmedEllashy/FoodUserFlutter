@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:food_user/presentation/address/add_address/add_address_view.dart';
 import 'package:food_user/presentation/address/all_addresses/all_addresses_view.dart';
 import 'package:food_user/presentation/address/edit_address/edit_address_view.dart';
+import 'package:food_user/presentation/chat/chat_view.dart';
 import 'package:food_user/presentation/check_out/check_out_view.dart';
 import 'package:food_user/presentation/login/login_view.dart';
 import 'package:food_user/presentation/main/pages/cart/cart_view.dart';
@@ -10,6 +11,7 @@ import 'package:food_user/presentation/main/pages/favourite/favourite_view.dart'
 import 'package:food_user/presentation/main/pages/notification/notification_view.dart';
 import 'package:food_user/presentation/main/pages/profile/profile_view.dart';
 import 'package:food_user/presentation/onboarding/onboarding_view.dart';
+import 'package:food_user/presentation/order/order_details_view/order_details_view.dart';
 import 'package:food_user/presentation/order/orders_view/orders_view.dart';
 import 'package:food_user/presentation/payment/add_card_view.dart';
 import 'package:food_user/presentation/pre_login/pre_login_view.dart';
@@ -18,6 +20,7 @@ import 'package:food_user/presentation/registration/registration_view.dart';
 import 'package:food_user/presentation/resources/string_manager.dart';
 import 'package:food_user/presentation/splash/spalsh_view.dart';
 import 'package:food_user/presentation/success_order/success_order_view.dart';
+import 'package:food_user/presentation/user_preferences/user_preferences_view.dart';
 
 import '../main/main_view.dart';
 import '../most_popular_products/most_popular_products.dart';
@@ -44,7 +47,14 @@ class AppRoutes{
   static const String addAddressRoute= '/addAddress';
   static const String editAddressRoute= '/editAddress';
   static const String allAddressesRoute= '/allAddresses';
-  static const String ordersRoute= '/orders';
+  static const String ordersViewRoute= '/orders';
+  static const String orderDetailsViewRoute= '/orderDetails';
+  static const String orderTrackingView= '/orderTracking';
+  static const String chatRoute= '/chatView';
+  static const String userPreferencesRoute= '/userPreferences';
+
+
+
 
 
 
@@ -92,8 +102,15 @@ class RouteGenerator{
         return MaterialPageRoute(builder:(context)=> const SuccessOrderView());
       case AppRoutes.allAddressesRoute :
         return MaterialPageRoute(builder:(context)=> const AllAddressesView());
-      case AppRoutes.ordersRoute :
+      case AppRoutes.ordersViewRoute :
         return MaterialPageRoute(builder:(context)=> const OrdersView());
+      case AppRoutes.orderDetailsViewRoute :
+        return MaterialPageRoute(builder:(context)=> const OrderDetailsView());
+      case AppRoutes.chatRoute :
+        return MaterialPageRoute(builder:(context)=> const ChatView());
+      case AppRoutes.userPreferencesRoute :
+        return MaterialPageRoute(builder:(context)=> const UserPreferencesView());
+
 
         default:
           return undefinedRoute();

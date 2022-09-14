@@ -7,13 +7,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:food_user/app/app.dart';
 import 'package:food_user/data/Repository/repository.dart';
 import 'package:food_user/presentation/resources/route_manager.dart';
-import 'package:food_user/app/extensions.dart';
 import 'package:food_user/presentation/resources/string_manager.dart';
 
 import '../../../app/app_prefs.dart';
-import 'auth_states.dart';
+import 'auth_state.dart';
 
-class AuthCubit extends Cubit<AuthStates> {
+class AuthCubit extends Cubit<AuthState> {
   final Repository _repository;
   final AppPreferences _appPreferences;
   AuthCubit(this._repository,this._appPreferences) : super(AuthInitialState());
@@ -68,7 +67,6 @@ class AuthCubit extends Cubit<AuthStates> {
             "favourite":[],
             "addresses":[],
             "defaultAddress":"",
-            //'tokenId': userCredential.user!.getIdToken(),
             'status': 'online',
             'token' : getDeviceToken(),
           });
@@ -83,9 +81,15 @@ class AuthCubit extends Cubit<AuthStates> {
   Future signInWithEmailAndPassword(String email ,String password)async{
     emit(AuthSignInWitheEmailAndPasswordLoadingState());
     try{
-      await _repository.signInWithEmailAndPassword(email, password);
+      final userCredential = await _repository.signInWithEmailAndPassword(email, password);
       emit(AuthSignInWitheEmailAndPasswordCompletedState());
       _appPreferences.setUserLoggedIn();
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userCredential.user?.uid)
+          .set({
+        'token': getDeviceToken(),
+      });
 
     }catch(e){
       emit(AuthSignInWitheEmailAndPasswordFailedState(e.toString()));
@@ -110,7 +114,7 @@ class AuthCubit extends Cubit<AuthStates> {
           "favourite":[],
           "addresses":[],
           "defaultAddress":"",
-          'token': getDeviceToken(),
+          'token': await getDeviceToken(),
           'status': 'online',
         });
 

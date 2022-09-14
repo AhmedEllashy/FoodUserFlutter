@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:food_user/data/Network/location_api.dart';
 import 'package:food_user/domain/logic/address_bloc/address_cubit.dart';
-import 'package:food_user/domain/logic/address_bloc/address_states.dart';
+import 'package:food_user/domain/logic/address_bloc/address_state.dart';
 import 'package:food_user/presentation/resources/string_manager.dart';
 import 'package:food_user/presentation/resources/values_manager.dart';
 import 'package:food_user/presentation/resources/widgets_manager.dart';
@@ -59,13 +59,14 @@ class _AddAddressViewState extends State<AddAddressView> {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: SafeArea(
-        child: BlocConsumer<AddressCubit, AddressStates>(
+        child: BlocConsumer<AddressCubit, AddressState>(
           listener: (context, state) {
             if (state is AddAddressFailedState) {
               getFlashBar(state.error, context);
             }
             if (state is AddAddressCompletedState) {
               getFlashBar(AppStrings.addressAddedSuccessfully, context,backgroundColor:AppColors.green);
+              Navigator.of(context).pop();
             }
             if (state is GetCurrentAddressCompletedState) {
               final location = state.location;
@@ -206,7 +207,7 @@ class _AddAddressViewState extends State<AddAddressView> {
     );
   }
 
-  void _uploadAddress(AddressStates state) {
+  void _uploadAddress(AddressState state) {
     if (_formKey.currentState!.validate()) {
       AddressCubit.get(context).addAddress(
         _nameController.text,

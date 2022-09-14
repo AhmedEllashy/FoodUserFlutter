@@ -9,7 +9,7 @@ import 'package:food_user/presentation/resources/styles_manager.dart';
 import 'package:food_user/presentation/resources/values_manager.dart';
 import 'package:food_user/presentation/resources/widgets_manager.dart';
 
-import '../../../domain/logic/address_bloc/address_states.dart';
+import '../../../domain/logic/address_bloc/address_state.dart';
 import '../../resources/color_manager.dart';
 
 class AllAddressesView extends StatefulWidget {
@@ -47,7 +47,7 @@ class _AllAddressesViewState extends State<AllAddressesView> {
         },
       ),
       body: SafeArea(
-        child: BlocConsumer<AddressCubit, AddressStates>(
+        child: BlocConsumer<AddressCubit, AddressState>(
           listener: (context, state) {
             if (state is GetAllAddressesFailedState) {
               getFlashBar(state.error, context);

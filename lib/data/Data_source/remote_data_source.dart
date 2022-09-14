@@ -35,6 +35,10 @@ abstract class RemoteDataSource {
   Future<void> addOrder(
       List<Cart> products, String total, String transactionId,UserAddress deliverAddress);
   Future<List<Order>> getUserOrders();
+  Future<dynamic> getUserData();
+  Future<List<dynamic>> getUserNotifications();
+  Stream<QuerySnapshot> getChatMessages();
+  Future<void> sendMessage(String messageBody);
 }
 
 class RemoteDataSourceImplementer implements RemoteDataSource {
@@ -162,6 +166,27 @@ class RemoteDataSourceImplementer implements RemoteDataSource {
    final orders =  await _appServiceClient.getUserOrders();
    return orders;
   }
+
+  @override
+  Future getUserData() async{
+    return await _appServiceClient.getUserData();
+  }
+
+  @override
+  Future<List<dynamic>> getUserNotifications() async{
+    return await _appServiceClient.getUserNotifications();
+  }
+
+  @override
+  Stream<QuerySnapshot<Object?>> getChatMessages() {
+    return _appServiceClient.getChatMessages();
+  }
+
+  @override
+  Future<void> sendMessage(String messageBody) async{
+    await _appServiceClient.sendMessage(messageBody);
+  }
+
 
 
 

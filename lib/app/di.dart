@@ -8,6 +8,7 @@ import 'package:get_it/get_it.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../data/Network/payment_api.dart';
 import 'app_prefs.dart';
 
 final instance = GetIt.instance;
@@ -33,6 +34,8 @@ Future<void> initAppModule()async{
   instance.registerLazySingleton<AuthApi>(() => AuthApi());
   //Location Api
   instance.registerLazySingleton<LocationManager>(() => LocationManager());
+  //Payment Api
+  instance.registerLazySingleton<PaymentApi>(() => PaymentApi());
 
 
 }

@@ -4,42 +4,45 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-class FirebaseMessagingHandler{
+class FirebaseMessagingHandler {
 
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   FlutterLocalNotificationsPlugin();
-   AndroidNotificationChannel channel = const AndroidNotificationChannel(
+  AndroidNotificationChannel channel = const AndroidNotificationChannel(
     'high_importance_channel', // id
     'High Importance Notifications', // title
-    description:'This channel is used for important notifications.', // description
+    description: 'This channel is used for important notifications.',
+    // description
     importance: Importance.high,
   );
 
 
-
-  initFirebaseNotificationMain()async{
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  initFirebaseNotificationMain() async {
+    // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
     await FlutterLocalNotificationsPlugin()
         .resolvePlatformSpecificImplementation<
         AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(channel);
 
-    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    await FirebaseMessaging.instance
+        .setForegroundNotificationPresentationOptions(
       alert: true,
       badge: true,
       sound: true,
     );
   }
-  initFirebaseNotificationApp(BuildContext context)async{
+
+  initFirebaseNotificationApp(BuildContext context) async {
     var initializationSettingsAndroid =
     const AndroidInitializationSettings('ic_launcher');
     var initialzationSettingsAndroid =
     const AndroidInitializationSettings('@mipmap/ic_launcher');
     var initializationSettings =
     InitializationSettings(android: initialzationSettingsAndroid);
-    flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    flutterLocalNotificationsPlugin.initialize(
+        initializationSettings); // return bool value of if notification allowed
 
-
+    //Foreground Handler
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
@@ -52,15 +55,17 @@ class FirebaseMessagingHandler{
               android: AndroidNotificationDetails(
                 channel.id,
                 channel.name,
-                channelDescription:channel.description,
+                channelDescription: channel.description,
                 color: Colors.blue,
                 // TODO add a proper drawable resource to android, for now using
-                //      one that already exists in example app.
                 icon: "@mipmap/ic_launcher",
               ),
             ));
       }
     });
+
+    // });
+
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;
@@ -81,10 +86,35 @@ class FirebaseMessagingHandler{
             }, context: context);
       }
     });
+    //Background Handler
+    FirebaseMessaging.onBackgroundMessage((RemoteMessage message) async {
+      try {
+        RemoteNotification? notification = message.notification;
+        AndroidNotification? android = message.notification?.android;
+        if (notification != null && android != null) {
+          flutterLocalNotificationsPlugin.show(
+              notification.hashCode,
+              notification.title,
+              notification.body,
+              NotificationDetails(
+                android: AndroidNotificationDetails(
+                  channel.id,
+                  channel.name,
+                  channelDescription: channel.description,
+                  color: Colors.blue,
+                  // TODO add a proper drawable resource to android, for now using
+                  //      one that already exists in example app.
+                  icon: "@mipmap/ic_launcher",
+                ),
+              ));
+        }
+      } catch (e) {
+        throw e.toString();
+      }
+    });
   }
-   Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-     // If you're going to use other Firebase services in the background, such as Firestore,
-     debugPrint('Handling a background message ${message.messageId}');
-   }
+
+
+
 
 }

@@ -11,13 +11,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await initAppModule();
-  PaymentApi.initStripe();
-  await getDeviceToken();
+   await PaymentApi.initStripe();
    FirebaseMessagingHandler().initFirebaseNotificationMain();
   runApp(MyApp());
-}
-Future<String?> getDeviceToken()async{
-  final token = await FirebaseMessaging.instance.getToken();
-  debugPrint(token);
-  return token;
 }

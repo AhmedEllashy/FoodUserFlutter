@@ -16,10 +16,10 @@ class OrderCubit extends Cubit<OrderState> {
 
   static OrderCubit get(context) => BlocProvider.of<OrderCubit>(context);
 
-  void addOrder(List<Cart> products, String total, String transactionId,
-      UserAddress deliverAddress) {
+  Future<void> addOrder(List<Cart> products, String total, String transactionId,
+      UserAddress deliverAddress) async{
     emit(AddOrderLoadingState());
-    _repository.addOrder(products, total, transactionId, deliverAddress).then(
+    await _repository.addOrder(products, total, transactionId, deliverAddress).then(
         (_) {
       emit(AddOrderCompletedState());
     }, onError: (error) => emit(AddOrderFailedState(error.toString())));

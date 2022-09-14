@@ -5,14 +5,15 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:food_user/data/Network/payment_api.dart';
 import 'package:food_user/domain/logic/address_bloc/address_cubit.dart';
 import 'package:food_user/domain/logic/cart_bloc/cart_cubit.dart';
-import 'package:food_user/domain/logic/cart_bloc/cart_states.dart';
+import 'package:food_user/domain/logic/cart_bloc/cart_state.dart';
 import 'package:food_user/domain/logic/order_bloc/order_cubit.dart';
 import 'package:food_user/domain/models/cart.dart';
 import 'package:food_user/presentation/address/add_address/add_address_view.dart';
 import 'package:food_user/presentation/resources/route_manager.dart';
 
 import '../../app/constants.dart';
-import '../../domain/logic/address_bloc/address_states.dart';
+import '../../domain/logic/address_bloc/address_state.dart';
+import '../../domain/logic/payment_bloc/payment_cubit.dart';
 import '../../domain/models/product.dart';
 import '../../domain/models/user.dart';
 import '../address/edit_address/edit_address_view.dart';
@@ -46,6 +47,7 @@ class _CheckOutViewState extends State<CheckOutView> {
       TextEditingController();
   List<UserAddress> addresses = [];
   int? defaultAddressIndex;
+  bool paymentIsLoading = false;
 
   @override
   void initState() {
@@ -65,7 +67,7 @@ class _CheckOutViewState extends State<CheckOutView> {
   Widget _getContentScreen() {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      body: BlocConsumer<AddressCubit, AddressStates>(
+      body: BlocConsumer<AddressCubit, AddressState>(
         listener: (context, state) {},
         builder: (context, state) {
           if (state is GetAllAddressesCompletedState) {
@@ -175,7 +177,7 @@ class _CheckOutViewState extends State<CheckOutView> {
               padding: const EdgeInsets.all(AppSize.s3),
               child: Text(
                 addresses.isNotEmpty
-                    ? addresses[defaultAddressIndex??0].addressName
+                    ? addresses[defaultAddressIndex ?? 0].addressName
                     : AppStrings.addDeliveryAddress,
                 style: getMediumTextStyle(),
               ),
@@ -319,35 +321,44 @@ class _CheckOutViewState extends State<CheckOutView> {
   }
 
   Widget _bottomButton() {
-
     return BlocConsumer<OrderCubit, OrderState>(listener: (context, state) {
       if (state is AddOrderFailedState) {
         getFlashBar(state.message, context);
       }
+      if (state is AddOrderCompletedState) {
+        CartCubit.get(context).subTotal = 0.0;
+        Navigator.pushNamed(context, AppRoutes.successRoute);
+      }
     }, builder: (context, state) {
-      return state is AddOrderLoadingState
+      return state is AddOrderLoadingState || paymentIsLoading
           ? const Center(
               child: CircularProgressIndicator(),
             )
           : AppButton(AppStrings.checkOut, () async {
               if (addresses.isEmpty || defaultAddressIndex == null) {
                 getFlashBar(AppStrings.addDeliveryAddress, context);
+              } else {
+                setState(() {
+                  paymentIsLoading = true;
+                });
+                PaymentApi()
+                    .initPayment(
+                        amount: double.parse(widget.total!), context: context)
+                    .then((_) async {
+                  await OrderCubit.get(context).addOrder(
+                      widget.cartProducts ?? [],
+                      widget.total ?? "0.0",
+                      "test",
+                      addresses[defaultAddressIndex!]);
+
+
+                }, onError: (e) {
+                      setState(() {
+                        paymentIsLoading = false;
+                      });
+                  getFlashBar(e.toString(), context);
+                });
               }
-
-              PaymentApi().initPayment(email: "email@yahoo.com", amount: 100.0, context: context).then((_){
-                OrderCubit.get(context).addOrder(
-                    widget.cartProducts ?? [],
-                    widget.total ?? "0.0",
-                    "test",
-                    addresses[defaultAddressIndex!]);
-                state is AddOrderCompletedState
-                    ? Navigator.pushNamed(context, AppRoutes.successRoute)
-                    : null;
-              },onError: (e){
-                getFlashBar(e.toString(), context);
-              });
-
-
             });
     });
   }

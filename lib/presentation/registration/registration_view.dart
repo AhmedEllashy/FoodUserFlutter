@@ -12,7 +12,7 @@ import 'package:food_user/presentation/resources/values_manager.dart';
 import 'package:food_user/presentation/resources/widgets_manager.dart';
 
 import '../../domain/logic/auth_bloc/auth_cubit.dart';
-import '../../domain/logic/auth_bloc/auth_states.dart';
+import '../../domain/logic/auth_bloc/auth_state.dart';
 
 class RegistrationView extends StatefulWidget {
   const RegistrationView({Key? key}) : super(key: key);
@@ -36,7 +36,7 @@ class _RegistrationViewState extends State<RegistrationView> {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: SafeArea(
-        child: BlocConsumer<AuthCubit, AuthStates>(listener: (context, state) {
+        child: BlocConsumer<AuthCubit, AuthState>(listener: (context, state) {
           if (state is AuthSignWithGoogleSuccessState) {
             debugPrint('success');
           }

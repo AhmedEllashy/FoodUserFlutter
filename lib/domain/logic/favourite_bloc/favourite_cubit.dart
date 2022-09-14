@@ -1,10 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:food_user/domain/logic/favourite_bloc/favourite_states.dart';
+import 'package:food_user/domain/logic/favourite_bloc/favourite_state.dart';
 
 import '../../../data/Repository/repository.dart';
 import '../../models/product.dart';
 
-class FavouriteCubit extends Cubit<FavouriteStates>{
+class FavouriteCubit extends Cubit<FavouriteState>{
   final Repository _repository;
   FavouriteCubit(this._repository):super(FavouriteInitialState());
 

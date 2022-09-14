@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class UserModel {
+class UserDataModel {
   String? uid;
   String? name;
   String? email;
@@ -17,7 +17,7 @@ class UserModel {
   // String loggedInVia;
   // bool isBlocked;
 
-  UserModel({
+  UserDataModel({
     this.uid,
     this.name,
     this.email,
@@ -32,9 +32,9 @@ class UserModel {
 
   });
 
-  factory UserModel.fromFireStore(DocumentSnapshot snapshot) {
+  factory UserDataModel.fromFireStore(DocumentSnapshot snapshot) {
     Map data = snapshot.data() as Map<String, dynamic>; // DownCasting
-    return UserModel(
+    return UserDataModel(
       uid: data["uid"] ?? "",
       name: snapshot['name'] ?? "",
       email: data['email'] ?? "",

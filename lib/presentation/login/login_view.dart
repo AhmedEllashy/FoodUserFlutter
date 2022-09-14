@@ -12,7 +12,7 @@ import 'package:food_user/presentation/resources/values_manager.dart';
 import 'package:food_user/presentation/resources/widgets_manager.dart';
 
 import '../../domain/logic/auth_bloc/auth_cubit.dart';
-import '../../domain/logic/auth_bloc/auth_states.dart';
+import '../../domain/logic/auth_bloc/auth_state.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -34,7 +34,7 @@ class _LoginViewState extends State<LoginView> {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: SafeArea(
-        child: BlocConsumer<AuthCubit, AuthStates>(listener: (context, state) {
+        child: BlocConsumer<AuthCubit, AuthState>(listener: (context, state) {
           if (state is AuthSignWithGoogleSuccessState) {
             debugPrint('success');
           }
@@ -194,12 +194,12 @@ class _LoginViewState extends State<LoginView> {
     if (_formKey.currentState!.validate()) {
       AuthCubit.get(context).signInWithEmailAndPassword(
           _emailController.text, _passwordController.text);
-      if (state is AuthSignInWitheEmailAndPasswordCompletedState) {
-        Navigator.pushNamed(context, AppRoutes.mainRoute);
-      }
-      if (state is AuthSignInWitheEmailAndPasswordFailedState) {
+       if (state is AuthSignInWitheEmailAndPasswordFailedState) {
         getFlashBar(state.errorMessage, context);
-      }
+      }else{
+         Navigator.pushNamed(context, AppRoutes.mainRoute);
+
+       }
     }
   }
 }
